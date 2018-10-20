@@ -16,10 +16,11 @@ class TimeEntry
 
     public function save()
     {
-        $stmt = $this->container->db->prepare("INSERT INTO time_entries(requirement_id, description, time) VALUES(:requirement_id, :description, :time)");
+        $stmt = $this->container->db->prepare("INSERT INTO time_entries(requirement_id, description, time, inr) VALUES(:requirement_id, :description, :time, :inr)");
         $stmt->bindParam(':requirement_id', $this->requirement_id);
         $stmt->bindParam(':description', $this->description);
         $stmt->bindParam(':time', $this->time);
+        $stmt->bindParam(':inr', $this->inr);
         $stmt->execute();
         $this->id = $this->container->db->lastInsertId();
     }

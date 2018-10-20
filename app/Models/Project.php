@@ -52,4 +52,30 @@ class Project
         return true;
     }
 
+    public function getTimeEntries()
+    {
+        $sql = "SELECT te.id, name, description, time, inr, te.created_at FROM time_entries te
+            JOIN requirements r ON r.id = te.requirement_id
+            WHERE project_id = :project_id";
+
+        $stmt = $this->container->db->prepare($sql);
+        $stmt->bindParam(':project_id', $this->id);
+        $stmt->execute();
+        $row = $stmt->fetchObject();
+
+        $data = [];
+        while ($row = $stmt->fetchObject()) {
+            $data[] = [
+                'id' => $row->id,
+                'name' => $row->name,
+                'description' => $row->description,
+                'time' => $row->time,
+                'inr' => $row->inr,
+                'created_at' => $row->created_at,
+            ];
+        }
+
+        return $data;
+    }
+
 }
