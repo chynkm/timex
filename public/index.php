@@ -2,4 +2,5 @@
 
 require __DIR__.'/../vendor/autoload.php';
 
-$t = new App\Models\TimeEntry;
+// call the routes file
+require __DIR__.'/../app/routes.php';
