@@ -30,5 +30,6 @@ $app->get('/hello/{name}', function (Request $request, Response $response, array
 // @todo change to POST
 $app->get('/time-entries', '\App\Controllers\TimeEntryController:store');
 $app->get('/', '\App\Controllers\TimeEntryController:index');
+$app->get('/home', '\App\Controllers\TimeEntryController:home');
 
 $app->run();

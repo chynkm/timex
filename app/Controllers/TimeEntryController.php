@@ -65,9 +65,6 @@ class TimeEntryController
         $timeEntry->save();
 
         return $response->withJson(['status' => 'true', 'message' => 'The time entry has been saved successfully.']);
-        /*return $this->container->view->render($response, 'home.php', [
-            // 'name' => $args['name']
-        ]);*/
     }
 
     public function index($request, $response, $args)
@@ -82,5 +79,12 @@ class TimeEntryController
         $project->id = intval($data['project_id']);
 
         return $response->withJson(['status' => 'true', 'data' => $project->getTimeEntries()]);
+    }
+
+    public function home($request, $response, $args)
+    {
+        return $this->container->view->render($response, 'home.php', [
+            // 'name' => $args['name']
+        ]);
     }
 }
