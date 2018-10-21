@@ -16,7 +16,7 @@ class TimeEntryController
        $this->container = $container;
     }
 
-    public function create($request, $response, $args)
+    public function store($request, $response, $args)
     {
         $data = $request->getQueryParams();
 

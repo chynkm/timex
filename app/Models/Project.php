@@ -27,7 +27,7 @@ class Project
         return $this->nameRequired() && $this->nameExists();
     }
 
-    public function nameRequired()
+    protected function nameRequired()
     {
         if(strlen($this->name) == 0) {
             $this->error = 'Please provide a name for the project.';
@@ -37,7 +37,7 @@ class Project
         return true;
     }
 
-    public function nameExists()
+    protected function nameExists()
     {
         $stmt = $this->container->db->prepare("SELECT count(id) project_count FROM projects WHERE name = :name");
         $stmt->bindParam(':name', $this->name);

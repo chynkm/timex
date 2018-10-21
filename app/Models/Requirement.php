@@ -31,7 +31,7 @@ class Requirement
             $this->nameExists();
     }
 
-    public function projectIdRequired()
+    protected function projectIdRequired()
     {
         if($this->project_id == 0) {
             $this->error = 'Please select a project for the requirement.';
@@ -41,7 +41,7 @@ class Requirement
         return true;
     }
 
-    public function nameRequired()
+    protected function nameRequired()
     {
         if(! $this->id && strlen($this->name) == 0) {
             $this->error = 'Please provide a name for the requirement.';
@@ -51,7 +51,7 @@ class Requirement
         return true;
     }
 
-    public function verifyRequirementIdBelongsToProjectId()
+    protected function verifyRequirementIdBelongsToProjectId()
     {
         if($this->id) {
             $stmt = $this->container->db->prepare("SELECT count(id) requirement_count FROM requirements WHERE project_id = :project_id and id = :id");
@@ -69,7 +69,7 @@ class Requirement
         return true;
     }
 
-    public function nameExists()
+    protected function nameExists()
     {
         $stmt = $this->container->db->prepare("SELECT count(id) requirement_count FROM requirements WHERE project_id = :project_id and name = :name");
         $stmt->bindParam(':project_id', $this->project_id);

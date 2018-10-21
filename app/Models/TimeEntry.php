@@ -30,7 +30,7 @@ class TimeEntry
         return $this->requirementIdRequired() && $this->descriptionRequired() && $this->timeRequired();
     }
 
-    public function requirementIdRequired()
+    protected function requirementIdRequired()
     {
         if($this->requirement_id == 0) {
             $this->error = 'Please select a requirement for the time entry.';
@@ -40,7 +40,7 @@ class TimeEntry
         return true;
     }
 
-    public function descriptionRequired()
+    protected function descriptionRequired()
     {
         if(strlen($this->description) == 0) {
             $this->error = 'Please provide a description.';
@@ -50,7 +50,7 @@ class TimeEntry
         return true;
     }
 
-    public function timeRequired()
+    protected function timeRequired()
     {
         if($this->time == 0) {
             $this->error = 'Please provide a time value.';
