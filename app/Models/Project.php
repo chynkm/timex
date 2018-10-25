@@ -61,7 +61,6 @@ class Project
         $stmt = $this->container->db->prepare($sql);
         $stmt->bindParam(':project_id', $this->id);
         $stmt->execute();
-        $row = $stmt->fetchObject();
 
         $data = [];
         while ($row = $stmt->fetchObject()) {
@@ -76,6 +75,33 @@ class Project
         }
 
         return $data;
+    }
+
+    public function all()
+    {
+        $stmt = $this->container->db->prepare("SELECT id, name FROM projects");
+        $stmt->execute();
+
+        $data = [];
+        while ($row = $stmt->fetchObject()) {
+            $data[] = [
+                'id' => $row->id,
+                'name' => $row->name,
+            ];
+        }
+
+        return $data;
+    }
+
+    public function find()
+    {
+        // @todo change to fetch and assign code to object
+        $stmt = $this->container->db->prepare("SELECT count(id) project_count FROM projects WHERE id = :id");
+        $stmt->bindParam(':id', $this->id);
+        $stmt->execute();
+        $row = $stmt->fetchObject();
+
+        return $row->project_count == 1;
     }
 
 }

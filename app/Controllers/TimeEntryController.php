@@ -23,7 +23,7 @@ class TimeEntryController
         $project = new Project($this->container);
 
         if(! isset($data['project_id'])) {
-            $project->name = $data['project_name'];
+            $project->name = isset($data['project_name']) ? $data['project_name'] : null;
             if(! $project->validate()) {
                 return $response->withJson(['status' => 'false', 'message' => $project->error], 422);
             }
@@ -37,7 +37,7 @@ class TimeEntryController
         $requirement->project_id = $project->id;
 
         if(! isset($data['requirement_id'])) {
-            $requirement->name = $data['requirement_name'];
+            $requirement->name = isset($data['requirement_name']) ? $data['requirement_name'] : null;
 
             if(! $requirement->validate()) {
                 return $response->withJson(['status' => 'false', 'message' => $requirement->error], 422);
