@@ -34,7 +34,7 @@ class TimeEntryController
         }
 
         $requirement = new Requirement($this->container);
-        $requirement->project_id = $project->id;
+        $requirement->projectId = $project->id;
 
         if(! isset($data['requirement_id'])) {
             $requirement->name = isset($data['requirement_name']) ? $data['requirement_name'] : null;

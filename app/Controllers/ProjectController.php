@@ -16,9 +16,9 @@ class ProjectController
 
     public function index($request, $response, $args)
     {
-        $project = Project($this->container);
+        $project = new Project($this->container);
 
-        return $response->withJson(['status' => 'true', 'data' => $project->all()]);
+        return $response->withJson(['status' => 'true', 'projects' => $project->all()]);
     }
 
 }

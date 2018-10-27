@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Models\Project;
+use App\Models\Requirement;
 use Psr\Container\ContainerInterface;
 
 class RequirementController
@@ -18,19 +19,22 @@ class RequirementController
     {
         $data = $request->getQueryParams();
 
+        if(isset($data['project_id'])) {
+            $project = new Project($this->container);
+            $project->id = $data['project_id'];
+            $project = $project->find();
 
-        if(! isset($data['project_id'])) {
-            $project = Project($this->container);
-            $project->name = isset($data['project_name']) ? $data['project_name'] : null;
-            if(! $project->validate()) {
-                return $response->withJson(['status' => 'false', 'message' => $project->error], 422);
+            if(is_null($project)) {
+                return $response->withJson([
+                    'status' => 'false',
+                    'message' => 'Sorry, we were unable to find the project.'
+                ], 422);
             }
-
         } else {
             return $response->withJson(['status' => 'false', 'message' => 'Please select a project.'], 422);
         }
 
-        return $response->withJson(['status' => 'true', 'data' => $project->all()]);
+        return $response->withJson(['status' => 'true', 'requirements' => (new Requirement($this->container))->all($project->id)]);
     }
 
 }

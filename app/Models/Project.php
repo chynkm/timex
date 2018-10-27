@@ -79,7 +79,7 @@ class Project
 
     public function all()
     {
-        $stmt = $this->container->db->prepare("SELECT id, name FROM projects");
+        $stmt = $this->container->db->prepare("SELECT id, name FROM projects ORDER BY name");
         $stmt->execute();
 
         $data = [];
@@ -95,13 +95,18 @@ class Project
 
     public function find()
     {
-        // @todo change to fetch and assign code to object
-        $stmt = $this->container->db->prepare("SELECT count(id) project_count FROM projects WHERE id = :id");
+        $stmt = $this->container->db->prepare("SELECT name, created_at FROM projects WHERE id = :id");
         $stmt->bindParam(':id', $this->id);
         $stmt->execute();
         $row = $stmt->fetchObject();
 
-        return $row->project_count == 1;
+        if($row) {
+            $this->name = $row->name;
+            $this->createdAt = $row->created_at;
+            return $this;
+        }
+
+        return null;
     }
 
 }

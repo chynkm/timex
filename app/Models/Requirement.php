@@ -7,7 +7,7 @@ use Psr\Container\ContainerInterface;
 class Requirement
 {
     protected $container;
-    public $id, $project_id, $name, $createdAt, $error;
+    public $id, $projectId, $name, $createdAt, $error;
 
     public function __construct(ContainerInterface $container)
     {
@@ -17,7 +17,7 @@ class Requirement
     public function save()
     {
         $stmt = $this->container->db->prepare("INSERT INTO requirements(project_id, name) VALUES(:project_id, :name)");
-        $stmt->bindParam(':project_id', $this->project_id);
+        $stmt->bindParam(':project_id', $this->projectId);
         $stmt->bindParam(':name', $this->name);
         $stmt->execute();
         $this->id = $this->container->db->lastInsertId();
@@ -33,7 +33,7 @@ class Requirement
 
     protected function projectIdRequired()
     {
-        if($this->project_id == 0) {
+        if($this->projectId == 0) {
             $this->error = 'Please select a project for the requirement.';
             return false;
         }
@@ -55,7 +55,7 @@ class Requirement
     {
         if($this->id) {
             $stmt = $this->container->db->prepare("SELECT count(id) requirement_count FROM requirements WHERE project_id = :project_id and id = :id");
-            $stmt->bindParam(':project_id', $this->project_id);
+            $stmt->bindParam(':project_id', $this->projectId);
             $stmt->bindParam(':id', $this->id);
             $stmt->execute();
             $row = $stmt->fetchObject();
@@ -72,7 +72,7 @@ class Requirement
     protected function nameExists()
     {
         $stmt = $this->container->db->prepare("SELECT count(id) requirement_count FROM requirements WHERE project_id = :project_id and name = :name");
-        $stmt->bindParam(':project_id', $this->project_id);
+        $stmt->bindParam(':project_id', $this->projectId);
         $stmt->bindParam(':name', $this->name);
         $stmt->execute();
         $row = $stmt->fetchObject();
@@ -83,6 +83,40 @@ class Requirement
         }
 
         return true;
+    }
+
+    public function all($projectId)
+    {
+        $stmt = $this->container->db->prepare("SELECT id, name FROM requirements WHERE project_id = :project_id ORDER BY name");
+        $stmt->bindParam(':project_id', $projectId);
+        $stmt->execute();
+
+        $data = [];
+        while ($row = $stmt->fetchObject()) {
+            $data[] = [
+                'id' => $row->id,
+                'name' => $row->name,
+            ];
+        }
+
+        return $data;
+    }
+
+    public function find()
+    {
+        $stmt = $this->container->db->prepare("SELECT poject_id, name, created_at project_count FROM requirements WHERE id = :id");
+        $stmt->bindParam(':id', $this->id);
+        $stmt->execute();
+        $row = $stmt->fetchObject();
+
+        if($row) {
+            $this->projectId = $row->project_id;
+            $this->name = $row->name;
+            $this->created_at = $row->created_at;
+            return $this;
+        }
+
+        return null;
     }
 
 }
