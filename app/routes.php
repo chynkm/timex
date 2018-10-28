@@ -27,8 +27,7 @@ $app->get('/hello/{name}', function (Request $request, Response $response, array
     return $response;
 });
 
-// @todo change to POST
-$app->get('/time-entries', '\App\Controllers\TimeEntryController:store');
+$app->post('/time-entries', '\App\Controllers\TimeEntryController:store');
 $app->get('/projects', '\App\Controllers\ProjectController:index');
 $app->get('/requirements', '\App\Controllers\RequirementController:index');
 $app->get('/', '\App\Controllers\TimeEntryController:index');

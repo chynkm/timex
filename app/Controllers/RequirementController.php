@@ -27,11 +27,11 @@ class RequirementController
             if(is_null($project)) {
                 return $response->withJson([
                     'status' => 'false',
-                    'message' => 'Sorry, we were unable to find the project.'
+                    'projectId' => 'Sorry, we were unable to find the project.'
                 ], 422);
             }
         } else {
-            return $response->withJson(['status' => 'false', 'message' => 'Please select a project.'], 422);
+            return $response->withJson(['status' => 'false', 'projectId' => 'Please select a project.'], 422);
         }
 
         return $response->withJson(['status' => 'true', 'requirements' => (new Requirement($this->container))->all($project->id)]);

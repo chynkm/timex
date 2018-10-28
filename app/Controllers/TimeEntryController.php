@@ -18,38 +18,38 @@ class TimeEntryController
 
     public function store($request, $response, $args)
     {
-        $data = $request->getQueryParams();
+        $data = $request->getParsedBody();
 
         $project = new Project($this->container);
 
-        if(! isset($data['project_id'])) {
-            $project->name = isset($data['project_name']) ? $data['project_name'] : null;
-            if(! $project->validate()) {
-                return $response->withJson(['status' => 'false', 'message' => $project->error], 422);
-            }
-
-            $project->save();
-        } else {
-            $project->id = intval($data['project_id']);
+        if($data['projectId'] == '') {
+            return $response->withJson(['status' => 'false', 'projectId' => 'Please select a project'], 422);
         }
+
+        if($data['requirementId'] == '') {
+            return $response->withJson(['status' => 'false', 'requirementId' => 'Please select a requirement'], 422);
+        }
+
+        if($data['timeBegin'] == '') {
+            return $response->withJson(['status' => 'false', 'timeBegin' => 'Please enter a start time'], 422);
+        }
+
+        if($data['timeEnd'] == '') {
+            return $response->withJson(['status' => 'false', 'timeEnd' => 'Please enter an end time'], 422);
+        }
+
+        if($data['description'] == '') {
+            return $response->withJson(['status' => 'false', 'description' => 'Please enter the description'], 422);
+        }
+
+        $project->id = intval($data['projectId']);
 
         $requirement = new Requirement($this->container);
         $requirement->projectId = $project->id;
+        $requirement->id = intval($data['requirementId']);
 
-        if(! isset($data['requirement_id'])) {
-            $requirement->name = isset($data['requirement_name']) ? $data['requirement_name'] : null;
-
-            if(! $requirement->validate()) {
-                return $response->withJson(['status' => 'false', 'message' => $requirement->error], 422);
-            }
-
-            $requirement->save();
-        } else {
-            $requirement->id = intval($data['requirement_id']);
-
-            if(! $requirement->validate()) {
-                return $response->withJson(['status' => 'false', 'message' => $requirement->error], 422);
-            }
+        if(! $requirement->validate()) {
+            return $response->withJson(['status' => 'false', 'requirementId' => $requirement->error], 422);
         }
 
         $timeEntry = new TimeEntry($this->container);
@@ -59,7 +59,7 @@ class TimeEntryController
         $timeEntry->inr = isset($data['inr']) ? floatval($data['inr']) : 0;
 
         if(! $timeEntry->validate()) {
-            return $response->withJson(['status' => 'false', 'message' => $timeEntry->error], 422);
+            return $response->withJson(['status' => 'false', 'timeEnd' => $timeEntry->error], 422);
         }
 
         $timeEntry->save();
