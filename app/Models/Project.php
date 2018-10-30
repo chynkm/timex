@@ -54,23 +54,35 @@ class Project
 
     public function getTimeEntries()
     {
-        $sql = "SELECT te.id, name, description, time, inr, te.created_at FROM time_entries te
+        $sql = "SELECT te.id, p.name project_name, r.name requirement_name, description, time, inr,
+            te.created_at FROM time_entries te
             JOIN requirements r ON r.id = te.requirement_id
-            WHERE project_id = :project_id";
+            JOIN projects p ON p.id = r.project_id";
+
+        if(isset($this->id)) {
+            $sql .= " WHERE project_id = :project_id";
+        }
+
+        $sql .= " ORDER BY created_at desc";
 
         $stmt = $this->container->db->prepare($sql);
-        $stmt->bindParam(':project_id', $this->id);
+
+        if(isset($this->id)) {
+            $stmt->bindParam(':project_id', $this->id);
+        }
+
         $stmt->execute();
 
         $data = [];
         while ($row = $stmt->fetchObject()) {
             $data[] = [
                 'id' => $row->id,
-                'name' => $row->name,
-                'description' => $row->description,
+                'project_name' => $row->project_name,
+                'requirement_name' => $row->requirement_name,
+                'description' => nl2br($row->description),
                 'time' => $row->time,
                 'inr' => $row->inr,
-                'created_at' => $row->created_at,
+                'created_at' => date('d-m-Y H:i', strtotime($row->created_at)),
             ];
         }
 
