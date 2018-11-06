@@ -90,14 +90,16 @@ class TimeEntryController
     public function stats($request, $response, $args)
     {
         $sql = "SELECT
-            SUM(IF(project_id <> $this->health, time, 0)) total_time,
-            SUM(IF(project_id <> $this->health, time*hourly_rate, 0)) total_rate,
-            SUM(IF(project_id = $this->health, time, 0)) health_total_time,
-            SUM(IF(MONTH(te.created_at) = MONTH(CURRENT_DATE()) AND YEAR(te.created_at) = YEAR(CURRENT_DATE()) AND project_id <> $this->health, time, 0)) current_month_time,
-            SUM(IF(MONTH(te.created_at) = MONTH(CURRENT_DATE()) AND YEAR(te.created_at) = YEAR(CURRENT_DATE()) AND project_id <> $this->health, time*hourly_rate, 0)) current_month_rate,
-            SUM(IF(MONTH(te.created_at) = MONTH(CURRENT_DATE()) AND YEAR(te.created_at) = YEAR(CURRENT_DATE()) AND project_id = $this->health, time, 0)) current_month_health_time
+            SUM(IF(p.category <> 'health', time, 0)) total_time,
+            SUM(IF(p.category <> 'health', time*rate, 0)) total_rate,
+            SUM(IF(p.category = 'health', time, 0)) health_total_time,
+            SUM(IF(MONTH(te.created_at) = MONTH(CURRENT_DATE()) AND YEAR(te.created_at) = YEAR(CURRENT_DATE()) AND p.category <> 'health', time, 0)) current_month_time,
+            SUM(IF(MONTH(te.created_at) = MONTH(CURRENT_DATE()) AND YEAR(te.created_at) = YEAR(CURRENT_DATE()) AND p.category <> 'health', time*rate, 0)) current_month_rate,
+            SUM(IF(MONTH(te.created_at) = MONTH(CURRENT_DATE()) AND YEAR(te.created_at) = YEAR(CURRENT_DATE()) AND p.category = 'health', time, 0)) current_month_health_time
             FROM time_entries te
-            JOIN requirements r on r.id = te.requirement_id";
+            LEFT JOIN hourly_rates hr ON hr.id = te.hourly_rate_id
+            JOIN requirements r ON r.id = te.requirement_id
+            JOIN projects p on p.id = r.project_id";
 
         $stmt = $this->container->db->prepare($sql);
         $stmt->execute();
@@ -110,7 +112,7 @@ class TimeEntryController
                 'health_total_time' => $row->health_total_time,
                 'current_month_time' => $row->current_month_time,
                 'current_month_rate' => round($row->current_month_rate),
-                'current_month_health_time' => round($row->current_month_health_time),
+                'current_month_health_time' => $row->current_month_health_time,
             ];
         } else {
             $stats = [
@@ -124,5 +126,26 @@ class TimeEntryController
         }
 
         return $response->withJson(['status' => 'true', 'stats' => $stats]);
+    }
+
+    public function graph($request, $response, $args)
+    {
+        $sql = "SELECT sum(time) total_time, DATE_FORMAT(te.created_at, '%d-%m') date from time_entries te
+            JOIN requirements r ON r.id = te.requirement_id
+            JOIN projects p on p.id = r.project_id
+            WHERE te.created_at >= DATE_SUB(NOW(), INTERVAL 1 MONTH)
+            AND p.category <> 'health'
+            GROUP BY YEAR(te.created_at), MONTH(te.created_at), DAY(te.created_at)";
+
+        $stmt = $this->container->db->prepare($sql);
+        $stmt->execute();
+
+        $dates = $series = [];
+        while ($row = $stmt->fetchObject()) {
+            $dates[] = $row->date;
+            $series[] = $row->total_time;
+        }
+
+        return $response->withJson(['status' => 'true', 'dates' => $dates, 'series' => [$series]]);
     }
 }

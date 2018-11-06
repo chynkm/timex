@@ -16,13 +16,27 @@ class TimeEntry
 
     public function save()
     {
-        $stmt = $this->container->db->prepare("INSERT INTO time_entries(requirement_id, description, time, inr) VALUES(:requirement_id, :description, :time, :inr)");
+        $hourlyRate = $this->hourlyRate();
+        $stmt = $this->container->db->prepare("INSERT INTO time_entries(requirement_id, hourly_rate_id, description, time, inr) VALUES(:requirement_id, :hourly_rate_id, :description, :time, :inr)");
         $stmt->bindParam(':requirement_id', $this->requirement_id);
+        $stmt->bindParam(':hourly_rate_id', $hourlyRate);
         $stmt->bindParam(':description', $this->description);
         $stmt->bindParam(':time', $this->time);
         $stmt->bindParam(':inr', $this->inr);
         $stmt->execute();
         $this->id = $this->container->db->lastInsertId();
+    }
+
+    protected function hourlyRate()
+    {
+        $stmt = $this->container->db->prepare("SELECT id FROM hourly_rates ORDER BY created_at DESC LIMIT 1");
+        $stmt->execute();
+
+        if($row = $stmt->fetchObject()) {
+            return $row->id;
+        }
+
+        return 0;
     }
 
     public function validate()
