@@ -15,4 +15,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('projects', ['as' => 'projects.index', 'uses' => 'ProjectController@index']);
 Route::post('projects', ['as' => 'projects.create', 'uses' => 'ProjectController@create']);
+Route::get('projects/{project}', ['as' => 'projects.show', 'uses' => 'ProjectController@show']);
+

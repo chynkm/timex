@@ -7,7 +7,7 @@ use App\Repositories\ProjectRepository;
 use App\Models\Project;
 use Illuminate\Support\Str;
 
-class ProjectTest extends TestCase
+class ProjectTestSample extends TestCase
 {
     /**
      * @dataProvider provideInvalidData

@@ -17,15 +17,20 @@ class ProjectRepository
      */
     public function save($projectData)
     {
-        $project = new Project();
+        /*$project = new Project();
         if ($project->validate($projectData) === false) {
             return false;
-        }
+        }*/
 
         $project = new Project();
         $project->name = $projectData->name;
         $project->save();
 
         return $project;
+    }
+
+    public function all()
+    {
+        return Project::all();
     }
 }
