@@ -14,3 +14,5 @@
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::post('projects', ['as' => 'projects.create', 'uses' => 'ProjectController@create']);
