@@ -3,28 +3,22 @@
 namespace App\Repositories;
 
 use App\Models\Project;
+use Illuminate\Support\Facades\Auth;
 
 class ProjectRepository
 {
     public $requiredFields = ['name'];
 
     /**
-     * @todo save from HTML array
-     *
      * @param  object $projectData
      *
-     * @return object|boolean
+     * @return object
      */
     public function save($projectData)
     {
-        /*$project = new Project();
-        if ($project->validate($projectData) === false) {
-            return false;
-        }*/
-
-        $project = new Project();
-        $project->name = $projectData->name;
-        $project->save();
+        $project = Auth::user()
+                        ->projects()
+                        ->create(['name' => $projectData->name]);
 
         return $project;
     }

@@ -2,11 +2,11 @@
 
 namespace App\Models;
 
-class Project extends MyModel
+use Illuminate\Database\Eloquent\Model;
+
+class Project extends Model
 {
-    protected $rules = [
-        'name' => 'required|min:3|max:50',
-    ];
+    public $guarded = [];
 
     public function path()
     {

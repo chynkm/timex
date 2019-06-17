@@ -15,9 +15,10 @@ class ProjectController extends Controller
         $this->projectRepo = $projectRepo;
     }
 
-    public function create(Request $request)
+    public function store(Request $request)
     {
-        $request->validate(['name' => 'required']);
+        $request->validate(['name' => 'required|min:3|max:50']);
+
         $this->projectRepo->save($request);
 
         return redirect()->route('projects.index');
