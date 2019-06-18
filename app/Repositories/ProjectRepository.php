@@ -16,15 +16,14 @@ class ProjectRepository
      */
     public function save($projectData)
     {
-        $project = Auth::user()
-                        ->projects()
-                        ->create(['name' => $projectData->name]);
-
-        return $project;
+        return Auth::user()
+            ->projects()
+            ->create(['name' => $projectData->name]);
     }
 
-    public function all()
+    public function  all()
     {
-        return Project::all();
+        return Auth::user()
+            ->projects;
     }
 }

@@ -11,11 +11,25 @@ class ProjectTest extends TestCase
 {
     use WithFaker, RefreshDatabase;
 
-    public function test_only_authenticated_users_can_create_projects()
+    public function guest_cannot_create_projects()
     {
         $attributes = factory('App\Models\Project')->raw();
 
         $this->post(route('projects.store'), $attributes)
+            ->assertRedirect('login');
+    }
+
+    public function test_guest_cannot_view_projects()
+    {
+        $this->get(route('projects.index'))
+            ->assertRedirect('login');
+    }
+
+    public function test_guest_cannot_view_single_project()
+    {
+        $project = factory('App\Models\Project')->create();
+
+        $this->get(route('projects.show', ['project' => $project->id]))
             ->assertRedirect('login');
     }
 
@@ -35,12 +49,22 @@ class ProjectTest extends TestCase
             ->assertSee($attributes['name']);
     }
 
-    public function test_a_project_can_view_a_project()
+    public function test_a_user_can_view_a_project()
     {
-        $project = factory('App\Models\Project')->create();
+        $this->be(factory('App\Models\User')->create());
+        $project = factory('App\Models\Project')->create(['user_id' => auth()->id()]);
 
         $this->get(route('projects.show', ['id' => $project->id]))
             ->assertSee($project->name);
+    }
+
+    public function test_an_authenticated_user_cannot_view_other_users_projects()
+    {
+        $this->be(factory('App\Models\User')->create());
+        $project = factory('App\Models\Project')->create();
+
+        $this->get(route('projects.show', ['id' => $project->id]))
+            ->assertStatus(403);
     }
 
     /**

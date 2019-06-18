@@ -17,12 +17,10 @@ Route::get('/', function () {
 
 Auth::routes();
 
-Route::get('projects', ['as' => 'projects.index', 'uses' => 'ProjectController@index']);
-Route::get('projects/{project}', ['as' => 'projects.show', 'uses' => 'ProjectController@show']);
-
 Route::middleware('auth')->group(function () {
-
     Route::get('/home', 'HomeController@index')->name('home');
-    Route::post('projects', ['as' => 'projects.store', 'uses' => 'ProjectController@store']);
-});
 
+    Route::get('projects', ['as' => 'projects.index', 'uses' => 'ProjectController@index']);
+    Route::post('projects', ['as' => 'projects.store', 'uses' => 'ProjectController@store']);
+    Route::get('projects/{project}', ['as' => 'projects.show', 'uses' => 'ProjectController@show']);
+});
