@@ -21,7 +21,7 @@ class ProjectRepository
             ->create(['name' => $projectData->name]);
     }
 
-    public function  all()
+    public function all()
     {
         return Auth::user()
             ->projects;

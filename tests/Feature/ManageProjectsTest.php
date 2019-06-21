@@ -7,11 +7,11 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Str;
 
-class ProjectTest extends TestCase
+class ManageProjectsTest extends TestCase
 {
     use WithFaker, RefreshDatabase;
 
-    public function guest_cannot_create_projects()
+    public function test_guest_cannot_create_projects()
     {
         $attributes = factory('App\Models\Project')->raw();
 
@@ -22,6 +22,12 @@ class ProjectTest extends TestCase
     public function test_guest_cannot_view_projects()
     {
         $this->get(route('projects.index'))
+            ->assertRedirect('login');
+    }
+
+    public function test_guest_cannot_access_create_project_view()
+    {
+        $this->get(route('projects.create'))
             ->assertRedirect('login');
     }
 
@@ -36,7 +42,11 @@ class ProjectTest extends TestCase
     public function test_user_can_create_a_project()
     {
         $this->refreshApplication();
-        $this->actingAs(factory('App\Models\User')->create());
+        $this->actingAs(factory('App\Models\User')
+            ->create());
+
+        $this->get(route('projects.create'))
+            ->assertStatus(200);
 
         $attributes = ['name' => 'my first project'];
 
@@ -64,7 +74,8 @@ class ProjectTest extends TestCase
         $project = factory('App\Models\Project')->create();
 
         $this->get(route('projects.show', ['id' => $project->id]))
-            ->assertStatus(403);
+            ->assertRedirect(route('projects.index'))
+            ->assertSessionHas('alert');
     }
 
     /**

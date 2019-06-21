@@ -31,10 +31,19 @@ class ProjectController extends Controller
         return view('projects.index', compact('projects'));
     }
 
+    public function create()
+    {
+        return view('projects.create');
+    }
+
     public function show(Project $project)
     {
         if (auth()->user()->isNot($project->user)) {
-            abort(403);
+            return redirect()->route('projects.index')
+                ->with('alert', [
+                    'class' => 'warning',
+                    'message' => __('form.requested_project_not_found'),
+                ]);
         }
 
         return view('projects.show', compact('project'));
