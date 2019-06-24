@@ -23,4 +23,16 @@ class ProjectTest extends TestCase
 
         $this->assertInstanceOf('App\Models\User', $project->user);
     }
+
+    public function test_it_can_add_a_requirement()
+    {
+        $project = factory('App\Models\Project')->create();
+
+        $requirement = $project->addRequirement('Test requirement');
+
+        $this->assertCount(1, $project->requirements);
+        $this->assertTrue($project->requirements
+            ->contains($requirement)
+        );
+    }
 }

@@ -42,8 +42,7 @@ class ManageProjectsTest extends TestCase
     public function test_user_can_create_a_project()
     {
         $this->refreshApplication();
-        $this->actingAs(factory('App\Models\User')
-            ->create());
+        $this->signIn();
 
         $this->get(route('projects.create'))
             ->assertStatus(200);
@@ -61,7 +60,7 @@ class ManageProjectsTest extends TestCase
 
     public function test_a_user_can_view_a_project()
     {
-        $this->be(factory('App\Models\User')->create());
+        $this->signIn();
         $project = factory('App\Models\Project')->create(['user_id' => auth()->id()]);
 
         $this->get(route('projects.show', ['id' => $project->id]))
@@ -70,7 +69,7 @@ class ManageProjectsTest extends TestCase
 
     public function test_an_authenticated_user_cannot_view_other_users_projects()
     {
-        $this->be(factory('App\Models\User')->create());
+        $this->signIn();
         $project = factory('App\Models\Project')->create();
 
         $this->get(route('projects.show', ['id' => $project->id]))
@@ -83,7 +82,7 @@ class ManageProjectsTest extends TestCase
      */
     public function test_project_name_invalidations($input, $output, $message)
     {
-        $this->actingAs(factory('App\Models\User')->create());
+        $this->signIn();
 
         $this->post(route('projects.store'), $input)
             ->assertSessionHasErrors('name');

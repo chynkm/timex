@@ -17,4 +17,15 @@ class Project extends Model
     {
         return $this->belongsTo('App\Models\User');
     }
+
+    public function requirements()
+    {
+        return $this->hasMany('App\Models\Requirement');
+    }
+
+    public function addRequirement($name)
+    {
+        return $this->requirements()
+            ->create(compact('name'));
+    }
 }
