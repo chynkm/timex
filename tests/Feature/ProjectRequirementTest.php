@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\Project;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Str;
@@ -38,6 +39,49 @@ class ProjectRequirementTest extends TestCase
         $this->assertDatabaseMissing('requirements', ['name' => 'new requirement']);
     }
 
+    public function test_project_can_update_requirement()
+    {
+        $this->signIn();
+        $project = factory(Project::class)->create(['user_id' => auth()->id()]);
+
+        $requirementName = $this->faker()->word;
+
+        $this->post(route('projects.requirement', ['project' => $project->id]), ['name' => $requirementName]);
+
+        $this->get(route('projects.show', ['project' => $project->id]))
+            ->assertSee($requirementName);
+
+        $requirementName = 'changed requirement';
+
+        $this->patch(route('requirements.requirement', ['requirement' => $project->requirements->first()->id]), ['name' => $requirementName]);
+
+        $this->get(route('projects.show', ['project' => $project->id]))
+            ->assertSee($requirementName);
+    }
+
+    public function test_only_project_owner_can_update_requirement()
+    {
+        $this->signIn();
+        $project = factory(Project::class)->create(['user_id' => auth()->id()]);
+
+        $requirementName = $this->faker()->word;
+
+        $this->post(route('projects.requirement', ['project' => $project->id]), ['name' => $requirementName]);
+
+        $this->get(route('projects.show', ['project' => $project->id]))
+            ->assertSee($requirementName);
+
+        $user = factory(User::class)->create();
+
+        $this->signIn($user);
+        $requirementName = 'changed requirement';
+
+        $this->patch(route('requirements.requirement', ['requirement' => $project->requirements->first()->id]), ['name' => $requirementName])
+            ->assertStatus(403);;
+
+        $this->assertDatabaseMissing('requirements', ['name' => $requirementName]);
+    }
+
     /**
      * @dataProvider invalidRequirementNameProvider
      */
@@ -50,6 +94,28 @@ class ProjectRequirementTest extends TestCase
             ->create(factory('App\Models\Project')->raw());
 
         $this->post(route('projects.requirement', ['project' => $project->id]), $input)
+            ->assertSessionHasErrors('name');
+    }
+
+    /**
+     * @dataProvider invalidRequirementNameProvider
+     */
+    public function test_update_requirement_name_invalidations($input, $output, $message)
+    {
+        $this->signIn();
+
+        $project = auth()->user()
+            ->projects()
+            ->create(factory('App\Models\Project')->raw());
+
+        $requirementName = 'my requirement';
+
+        $this->post(route('projects.requirement', ['project' => $project->id]), ['name' => $requirementName]);
+
+        $this->get(route('projects.show', ['project' => $project->id]))
+            ->assertSee($requirementName);
+
+        $this->patch(route('requirements.requirement', ['requirement' => $project->requirements->first()->id]), $input)
             ->assertSessionHasErrors('name');
     }
 

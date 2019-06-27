@@ -7,13 +7,6 @@ use Illuminate\Support\Facades\Auth;
 
 class ProjectRepository
 {
-    public $requiredFields = ['name'];
-
-    /**
-     * @param  object $projectData
-     *
-     * @return object
-     */
     public function save($projectData)
     {
         return Auth::user()
