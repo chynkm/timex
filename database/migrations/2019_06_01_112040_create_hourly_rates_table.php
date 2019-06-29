@@ -16,7 +16,8 @@ class CreateHourlyRatesTable extends Migration
         Schema::create('hourly_rates', function (Blueprint $table) {
             $table->increments('id');
             $table->decimal('rate', 20, 2);
-            $table->timestamps();
+            $table->timestamp('created_at')
+                ->default(DB::raw('CURRENT_TIMESTAMP'));
         });
     }
 

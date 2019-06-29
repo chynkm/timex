@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\Project;
+use App\Models\Requirement;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -20,7 +21,7 @@ class ProjectRequirementTest extends TestCase
 
         $project = factory(Project::class)->create(['user_id' => auth()->id()]);
 
-        $requirementName = $this->faker()->word;
+        $requirementName = 'my requirement name';
 
         $this->post(route('projects.requirement', ['project' => $project->id]), ['name' => $requirementName]);
 
@@ -44,7 +45,7 @@ class ProjectRequirementTest extends TestCase
         $this->signIn();
         $project = factory(Project::class)->create(['user_id' => auth()->id()]);
 
-        $requirementName = $this->faker()->word;
+        $requirementName = 'my requirement name';
 
         $this->post(route('projects.requirement', ['project' => $project->id]), ['name' => $requirementName]);
 
@@ -61,10 +62,11 @@ class ProjectRequirementTest extends TestCase
 
     public function test_only_project_owner_can_update_requirement()
     {
+        $this->refreshApplication();
         $this->signIn();
         $project = factory(Project::class)->create(['user_id' => auth()->id()]);
 
-        $requirementName = $this->faker()->word;
+        $requirementName = 'my requirement name';
 
         $this->post(route('projects.requirement', ['project' => $project->id]), ['name' => $requirementName]);
 
@@ -80,6 +82,23 @@ class ProjectRequirementTest extends TestCase
             ->assertStatus(403);;
 
         $this->assertDatabaseMissing('requirements', ['name' => $requirementName]);
+    }
+
+    public function test_guest_cannot_create_requirement()
+    {
+        $project = factory(Project::class)->create();
+        $requirementName = $this->faker()->word;
+
+        $this->post(route('projects.requirement', ['project' => $project->id]), ['name' => $requirementName])
+            ->assertRedirect('login');
+    }
+
+    public function test_guest_cannot_update_requirement()
+    {
+        $requirement = factory(Requirement::class)->create();
+
+        $this->patch(route('requirements.requirement', ['requirement' => $requirement->id]), ['name' => 'changed requirement'])
+            ->assertRedirect('login');
     }
 
     /**

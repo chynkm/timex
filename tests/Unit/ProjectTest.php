@@ -31,8 +31,6 @@ class ProjectTest extends TestCase
         $requirement = $project->addRequirement('Test requirement');
 
         $this->assertCount(1, $project->requirements);
-        $this->assertTrue($project->requirements
-            ->contains($requirement)
-        );
+        $this->assertTrue($project->requirements->contains($requirement));
     }
 }
