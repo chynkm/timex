@@ -4,6 +4,7 @@ return [
     'projects' => 'Projects',
     'project' => 'Project',
     'create_project' => 'Create project',
+    'edit_project' => 'Edit project',
     'no_projects' => 'No projects',
     'no_entries_for_today' => 'No entries for today',
     'no_requirements' => 'No requirements',

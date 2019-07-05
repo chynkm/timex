@@ -17,11 +17,7 @@ class ProjectController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate(['name' => 'required|min:3|max:50']);
-
-        $this->projectRepo->save($request);
-
-        return redirect()->route('projects.index');
+        return $this->saveUpdate(null, $request);
     }
 
     public function index()
@@ -33,19 +29,30 @@ class ProjectController extends Controller
 
     public function create()
     {
-        return view('projects.create');
+        return view('projects.createEdit');
     }
 
     public function show(Project $project)
     {
-        if (auth()->user()->isNot($project->user)) {
-            return redirect()->route('projects.index')
-                ->with('alert', [
-                    'class' => 'warning',
-                    'message' => __('form.requested_project_not_found'),
-                ]);
-        }
-
         return view('projects.show', compact('project'));
+    }
+
+    public function edit(Project $project)
+    {
+        return view('projects.createEdit', compact('project'));
+    }
+
+    public function update(Project $project, Request $request)
+    {
+        return $this->saveUpdate($project, $request);
+    }
+
+    protected function saveUpdate($project, Request $request)
+    {
+        $request->validate(['name' => 'required|min:3|max:50']);
+
+        $this->projectRepo->save($project, $request);
+
+        return redirect()->route('projects.index');
     }
 }

@@ -8,7 +8,6 @@ class TimeEntryRepository
 {
     public function save($timeEntryData)
     {
-
         $descriptions = [];
         $totalTime = 0;
         $description = preg_split('/([0-9]{3,4})/',

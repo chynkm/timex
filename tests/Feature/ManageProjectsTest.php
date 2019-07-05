@@ -77,6 +77,79 @@ class ManageProjectsTest extends TestCase
             ->assertSessionHas('alert');
     }
 
+    public function test_a_user_can_update_his_project()
+    {
+        $this->signIn();
+        $project = factory('App\Models\Project')->create(['user_id' => auth()->id()]);
+
+        $this->get(route('projects.index'))
+            ->assertSee($project['name']);
+
+        $this->get(route('projects.edit', ['project' => $project->id]))
+            ->assertStatus(200);
+
+        $newProject = ['name' => 'new project name'];
+
+        $this->put(route('projects.update', ['project' => $project->id]), $newProject)
+            ->assertRedirect(route('projects.index'));
+
+        $this->assertDatabaseHas('projects', $newProject);
+
+        $this->get(route('projects.show', ['project' => $project->id]))
+            ->assertSee($newProject['name']);
+    }
+
+    public function test_a_user_cannot_view_or_update_other_user_project()
+    {
+        $this->signIn();
+        $project = factory('App\Models\Project')->create();
+
+        $this->assertDatabaseHas('projects', $project->toArray());
+
+        $this->get(route('projects.edit', ['project' => $project->id]))
+            ->assertRedirect(route('projects.index'));
+
+        $newProject = ['name' => 'new project name'];
+
+        $this->put(route('projects.update', ['project' => $project->id]), $newProject)
+            ->assertRedirect(route('projects.index'));
+
+        $this->assertDatabaseMissing('projects', $newProject);
+
+        $this->get(route('projects.show', ['project' => $project->id]))
+            ->assertDontSee($newProject['name']);
+    }
+
+    public function test_guest_cannot_edit_single_project()
+    {
+        $project = factory('App\Models\Project')->create();
+
+        $this->get(route('projects.edit', ['project' => $project->id]))
+            ->assertRedirect('login');
+    }
+
+    public function test_guest_cannot_update_single_project()
+    {
+        $project = factory('App\Models\Project')->create();
+
+        $newProject = ['name' => 'new project name'];
+
+        $this->put(route('projects.update', ['project' => $project->id]), $newProject)
+            ->assertRedirect('login');
+    }
+
+    /**
+     * @dataProvider invalidProjectNameProvider
+     */
+    public function test_project_name_invalidations_for_project_update($input, $output, $message)
+    {
+        $this->signIn();
+        $project = factory('App\Models\Project')->create(['user_id' => auth()->id()]);
+
+        $this->put(route('projects.update', ['project' => $project->id]), $input)
+            ->assertSessionHasErrors('name');
+    }
+
     /**
      * @dataProvider invalidProjectNameProvider
      */

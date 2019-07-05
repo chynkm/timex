@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit;
+namespace Tests\Repository;
 
 use App\Repositories\TimeEntryRepository;
 use Illuminate\Foundation\Testing\RefreshDatabase;

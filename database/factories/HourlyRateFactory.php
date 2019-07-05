@@ -7,6 +7,7 @@ use Faker\Generator as Faker;
 
 $factory->define(HourlyRate::class, function (Faker $faker) {
     return [
-        'rate' => $this->faker->randomFloat(2, 100, 1000)
+        'rate' => $this->faker->randomFloat(2, 100, 1000),
+        'user_id' => factory(App\Models\User::class),
     ];
 });

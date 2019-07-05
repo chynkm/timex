@@ -24,6 +24,8 @@ Route::middleware('auth')->group(function () {
     Route::get('projects/create', ['as' => 'projects.create', 'uses' => 'ProjectController@create']);
     Route::post('projects', ['as' => 'projects.store', 'uses' => 'ProjectController@store']);
     Route::get('projects/{project}', ['as' => 'projects.show', 'uses' => 'ProjectController@show']);
+    Route::get('projects/{project}/edit', ['as' => 'projects.edit', 'uses' => 'ProjectController@edit']);
+    Route::put('projects/{project}', ['as' => 'projects.update', 'uses' => 'ProjectController@update']);
 
     Route::post('projects/{project}/requirement', ['as' => 'projects.requirement', 'uses' => 'ProjectRequirementController@store']);
     Route::patch('requirements/{requirement}', ['as' => 'requirements.requirement', 'uses' => 'RequirementController@update']);

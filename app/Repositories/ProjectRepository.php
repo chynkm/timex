@@ -7,11 +7,15 @@ use Illuminate\Support\Facades\Auth;
 
 class ProjectRepository
 {
-    public function save($projectData)
+    public function save($project, $projectData)
     {
-        return Auth::user()
-            ->projects()
-            ->create(['name' => $projectData->name]);
+        if (is_null($project)) {
+            return Auth::user()
+                ->projects()
+                ->create(['name' => $projectData->name]);
+        }
+
+        return $project->update(['name' => $projectData->name]);
     }
 
     public function all()

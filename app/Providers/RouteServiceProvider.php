@@ -2,8 +2,9 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\Facades\Route;
+use App\Models\Project;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
+use Illuminate\Support\Facades\Route;
 
 class RouteServiceProvider extends ServiceProvider
 {
@@ -23,9 +24,23 @@ class RouteServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
-
         parent::boot();
+
+        Route::bind('project', function ($value) {
+            $project = Project::find($value);
+
+            if ($project && auth()->user()->is($project->user)) {
+                return $project;
+            }
+
+            return abort(
+                redirect()->route('projects.index')
+                    ->with('alert', [
+                        'class' => 'warning',
+                        'message' => __('form.requested_project_not_found'),
+                    ])
+            );
+        });
     }
 
     /**

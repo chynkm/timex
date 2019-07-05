@@ -35,7 +35,7 @@ class ProjectRequirementTest extends TestCase
         $project = factory(Project::class)->create();
 
         $this->post(route('projects.requirement', ['project' => $project->id]), ['name' => 'new requirement'])
-            ->assertStatus(403);
+            ->assertRedirect(route('projects.index'));
 
         $this->assertDatabaseMissing('requirements', ['name' => 'new requirement']);
     }
