@@ -9,6 +9,8 @@ class HourlyRate extends Model
 {
     public $timestamps = false;
 
+    protected $guarded = [];
+
     public function user()
     {
         return $this->belongsTo('App\Models\User');

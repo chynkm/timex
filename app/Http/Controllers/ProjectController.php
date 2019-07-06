@@ -17,7 +17,7 @@ class ProjectController extends Controller
 
     public function store(Request $request)
     {
-        return $this->saveUpdate(null, $request);
+        return $this->storeUpdate(null, $request);
     }
 
     public function index()
@@ -44,10 +44,10 @@ class ProjectController extends Controller
 
     public function update(Project $project, Request $request)
     {
-        return $this->saveUpdate($project, $request);
+        return $this->storeUpdate($project, $request);
     }
 
-    protected function saveUpdate($project, Request $request)
+    protected function storeUpdate($project, Request $request)
     {
         $request->validate(['name' => 'required|min:3|max:50']);
 

@@ -21,4 +21,14 @@ class HourlyRateRepository
         return Auth::user()
             ->hourlyRates;
     }
+
+    public function currentRateId()
+    {
+        $hourlyRate = Auth::user()
+            ->hourlyRates()
+            ->latest('id')
+            ->first();
+
+        return $hourlyRate ? $hourlyRate->id : 0;
+    }
 }

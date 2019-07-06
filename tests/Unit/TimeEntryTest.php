@@ -14,4 +14,11 @@ class TimeEntryTest extends TestCase
 
         $this->assertInstanceOf('App\Models\Requirement', $timeEntry->requirement);
     }
+
+    public function test_time_entry_belongs_to_a_user()
+    {
+        $timeEntry = factory('App\Models\TimeEntry')->create();
+
+        $this->assertInstanceOf('App\Models\User', $timeEntry->user);
+    }
 }

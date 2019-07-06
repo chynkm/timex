@@ -15,6 +15,7 @@ class CreateTimeEntriesTable extends Migration
     {
         Schema::create('time_entries', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('requirement_id');
             $table->unsignedInteger('hourly_rate_id');
             $table->text('description');
@@ -22,6 +23,9 @@ class CreateTimeEntriesTable extends Migration
             $table->decimal('inr', 20, 2)->nullable();
             $table->timestamps();
 
+            $table->foreign('user_id')
+                ->references('id')
+                ->on('users');
             $table->foreign('requirement_id')
                 ->references('id')
                 ->on('requirements');

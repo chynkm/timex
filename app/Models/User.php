@@ -46,4 +46,9 @@ class User extends Authenticatable
     {
         return $this->hasMany('App\Models\HourlyRate');
     }
+
+    public function timeEntries()
+    {
+        return $this->hasMany('App\Models\TimeEntry');
+    }
 }

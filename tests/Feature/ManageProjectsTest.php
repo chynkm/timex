@@ -45,7 +45,7 @@ class ManageProjectsTest extends TestCase
         $this->signIn();
 
         $this->get(route('projects.create'))
-            ->assertStatus(200);
+            ->assertOk();
 
         $attributes = ['name' => 'my first project'];
 
@@ -86,11 +86,11 @@ class ManageProjectsTest extends TestCase
             ->assertSee($project['name']);
 
         $this->get(route('projects.edit', ['project' => $project->id]))
-            ->assertStatus(200);
+            ->assertOk();
 
         $newProject = ['name' => 'new project name'];
 
-        $this->put(route('projects.update', ['project' => $project->id]), $newProject)
+        $this->patch(route('projects.update', ['project' => $project->id]), $newProject)
             ->assertRedirect(route('projects.index'));
 
         $this->assertDatabaseHas('projects', $newProject);
@@ -111,7 +111,7 @@ class ManageProjectsTest extends TestCase
 
         $newProject = ['name' => 'new project name'];
 
-        $this->put(route('projects.update', ['project' => $project->id]), $newProject)
+        $this->patch(route('projects.update', ['project' => $project->id]), $newProject)
             ->assertRedirect(route('projects.index'));
 
         $this->assertDatabaseMissing('projects', $newProject);
@@ -134,7 +134,7 @@ class ManageProjectsTest extends TestCase
 
         $newProject = ['name' => 'new project name'];
 
-        $this->put(route('projects.update', ['project' => $project->id]), $newProject)
+        $this->patch(route('projects.update', ['project' => $project->id]), $newProject)
             ->assertRedirect('login');
     }
 
@@ -146,7 +146,7 @@ class ManageProjectsTest extends TestCase
         $this->signIn();
         $project = factory('App\Models\Project')->create(['user_id' => auth()->id()]);
 
-        $this->put(route('projects.update', ['project' => $project->id]), $input)
+        $this->patch(route('projects.update', ['project' => $project->id]), $input)
             ->assertSessionHasErrors('name');
     }
 

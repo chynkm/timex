@@ -24,4 +24,11 @@ class UserTest extends TestCase
 
         $this->assertInstanceOf(Collection::class, $user->hourlyRates);
     }
+
+    public function test_a_user_has_many_time_entries()
+    {
+        $user = factory(\App\Models\User::class)->create();
+
+        $this->assertInstanceOf(Collection::class, $user->timeEntries);
+    }
 }

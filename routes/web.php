@@ -25,12 +25,18 @@ Route::middleware('auth')->group(function () {
     Route::post('projects', ['as' => 'projects.store', 'uses' => 'ProjectController@store']);
     Route::get('projects/{project}', ['as' => 'projects.show', 'uses' => 'ProjectController@show']);
     Route::get('projects/{project}/edit', ['as' => 'projects.edit', 'uses' => 'ProjectController@edit']);
-    Route::put('projects/{project}', ['as' => 'projects.update', 'uses' => 'ProjectController@update']);
+    Route::patch('projects/{project}', ['as' => 'projects.update', 'uses' => 'ProjectController@update']);
 
-    Route::post('projects/{project}/requirement', ['as' => 'projects.requirement', 'uses' => 'ProjectRequirementController@store']);
-    Route::patch('requirements/{requirement}', ['as' => 'requirements.requirement', 'uses' => 'RequirementController@update']);
+    Route::get('projects/{project}/create-requirement', ['as' => 'requirements.create', 'uses' => 'RequirementController@create']);
+    Route::post('projects/{project}/requirement', ['as' => 'requirements.store', 'uses' => 'RequirementController@store']);
+    Route::get('requirements/{project?}', ['as' => 'requirements.projectRequirement', 'uses' => 'RequirementController@projectRequirement']);
+    Route::get('requirements/{requirement}/edit', ['as' => 'requirements.edit', 'uses' => 'RequirementController@edit']);
+    Route::patch('requirements/{requirement}', ['as' => 'requirements.update', 'uses' => 'RequirementController@update']);
 
-    Route::post('time-entries', ['as' => 'timeEntries.store', 'uses' => 'TimeEntryController@store']);
+    Route::get('time-entries', ['as' => 'timeEntries.index', 'uses' => 'TimeEntryController@index']);
     Route::get('time-entries/create', ['as' => 'timeEntries.create', 'uses' => 'TimeEntryController@create']);
+    Route::post('time-entries', ['as' => 'timeEntries.store', 'uses' => 'TimeEntryController@store']);
+    Route::get('time-entries/{timeEntry}/edit', ['as' => 'timeEntries.edit', 'uses' => 'TimeEntryController@edit']);
+    Route::patch('time-entries/{timeEntry}/update', ['as' => 'timeEntries.update', 'uses' => 'TimeEntryController@update']);
 });
 

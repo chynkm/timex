@@ -12,4 +12,9 @@ class TimeEntry extends Model
     {
         return $this->belongsTo('App\Models\Requirement');
     }
+
+    public function user()
+    {
+        return $this->belongsTo('App\Models\User');
+    }
 }

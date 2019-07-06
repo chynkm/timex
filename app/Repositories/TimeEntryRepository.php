@@ -3,10 +3,17 @@
 namespace App\Repositories;
 
 use App\Models\TimeEntry;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class TimeEntryRepository
 {
-    public function save($timeEntryData)
+    public function __construct()
+    {
+        $this->hourlyRateRepository = new HourlyRateRepository;
+    }
+
+    public function save($timeEntry, $timeEntryData)
     {
         $descriptions = [];
         $totalTime = 0;
@@ -21,12 +28,19 @@ class TimeEntryRepository
             $totalTime += $time;
         }
 
-        TimeEntry::create([
+        $timeEntryArray = [
             'requirement_id' => $timeEntryData->requirement_id,
-            'hourly_rate_id' => 1, // get latest from DB
+            'hourly_rate_id' => $this->hourlyRateRepository->currentRateId(),
             'description' => implode("\n", $descriptions),
             'time' => round($totalTime, 2),
-        ]);
+        ];
+
+        if ($timeEntry) {
+            return $timeEntry->update($timeEntryArray);
+        }
+
+        $timeEntryArray['user_id'] = Auth::id();
+        return TimeEntry::create($timeEntryArray);
     }
 
     public function getTimeInDecimals(string $start, string $end)
@@ -38,4 +52,20 @@ class TimeEntryRepository
 
         return round(abs($end - $start) / (60*60), 2);
     }
+
+    public function all()
+    {
+        return Auth::user()
+            ->timeEntries()
+            ->paginate(config('env.page_limit'));
+    }
+
+    public function todaysEntries()
+    {
+        return Auth::user()
+            ->timeEntries()
+            ->where('created_at', '>=', Carbon::today())
+            ->get();
+    }
+
 }

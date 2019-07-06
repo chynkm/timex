@@ -21,6 +21,7 @@ class ProjectRepository
     public function all()
     {
         return Auth::user()
-            ->projects;
+            ->projects
+            ->sortBy('name');
     }
 }

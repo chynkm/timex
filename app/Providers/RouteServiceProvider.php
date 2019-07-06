@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use App\Models\Project;
+use App\Models\Requirement;
+use App\Models\TimeEntry;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Route;
 
@@ -38,6 +40,39 @@ class RouteServiceProvider extends ServiceProvider
                     ->with('alert', [
                         'class' => 'warning',
                         'message' => __('form.requested_project_not_found'),
+                    ])
+            );
+        });
+
+        Route::bind('requirement', function ($value) {
+            $requirement = Requirement::find($value);
+
+            if ($requirement && auth()->user()->is($requirement->project->user)) {
+                return $requirement;
+            }
+
+            return abort(
+                redirect()->route('projects.index')
+                    ->with('alert', [
+                        'class' => 'warning',
+                        'message' => __('form.requested_requirement_not_found'),
+                    ])
+            );
+        });
+
+        Route::bind('timeEntry', function ($value) {
+            $timeEntry = TimeEntry::find($value);
+
+            if ($timeEntry && auth()->user()->is($timeEntry->requirement->project->user)) {
+                return $timeEntry;
+            }
+
+            // change to timeEntries.index
+            return abort(
+                redirect()->route('projects.index')
+                    ->with('alert', [
+                        'class' => 'warning',
+                        'message' => __('form.requested_time_entry_not_found'),
                     ])
             );
         });
