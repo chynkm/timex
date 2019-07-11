@@ -40,6 +40,11 @@
                                             class="btn btn-primary btn-sm">
                                                 <i class="fa fa-pencil"></i>
                                         </a>
+                                        <a href="{{ route('todos.index', ['requirement' => $requirement->id]) }}"
+                                            role="button"
+                                            class="btn btn-primary btn-sm">
+                                                <i class="fa fa-check-square"></i>
+                                        </a>
                                     </td>
                                 </tr>
                                 @empty

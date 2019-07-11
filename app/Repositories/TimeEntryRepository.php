@@ -15,24 +15,30 @@ class TimeEntryRepository
 
     public function save($timeEntry, $timeEntryData)
     {
-        $descriptions = [];
-        $totalTime = 0;
-        $description = preg_split('/([0-9]{3,4})/',
-            $timeEntryData->description,
-            -1,
-            PREG_SPLIT_NO_EMPTY|PREG_SPLIT_DELIM_CAPTURE);
+        if (is_null($timeEntry)) {
+            $descriptions = [];
+            $totalTime = 0;
+            $description = preg_split('/([0-9]{3,4})/',
+                $timeEntryData->description,
+                -1,
+                PREG_SPLIT_NO_EMPTY|PREG_SPLIT_DELIM_CAPTURE);
 
-        for ($i = 0; $i <= (count($description) - 2); $i += 2) {
-            $time = round($this->getTimeInDecimals($description[$i], $description[$i+2]), 2);
-            $descriptions[] = $description[$i].' - '.$description[$i+2].' '.trim($description[$i+1]).' ('.number_format($time, 2, '.', '').')';
-            $totalTime += $time;
+            for ($i = 0; $i <= (count($description) - 2); $i += 2) {
+                $time = round($this->getTimeInDecimals($description[$i], $description[$i+2]), 2);
+                $descriptions[] = $description[$i].' - '.$description[$i+2].' '.trim($description[$i+1]).' ('.number_format($time, 2, '.', '').')';
+                $totalTime += $time;
+            }
+
+            if (empty($descriptions)) {
+                $descriptions[] = trim($timeEntryData->description);
+            }
         }
 
         $timeEntryArray = [
             'requirement_id' => $timeEntryData->requirement_id,
             'hourly_rate_id' => $this->hourlyRateRepository->currentRateId(),
-            'description' => implode("\n", $descriptions),
-            'time' => round($totalTime, 2),
+            'description' => $timeEntry ? $timeEntryData->description : implode("\n", $descriptions),
+            'time' => $timeEntry ? $timeEntryData->time : round($totalTime, 2),
         ];
 
         if ($timeEntry) {
@@ -57,6 +63,7 @@ class TimeEntryRepository
     {
         return Auth::user()
             ->timeEntries()
+            ->latest()
             ->paginate(config('env.page_limit'));
     }
 
@@ -65,7 +72,8 @@ class TimeEntryRepository
         return Auth::user()
             ->timeEntries()
             ->where('created_at', '>=', Carbon::today())
-            ->get();
+            ->latest()
+            ->paginate(config('env.page_limit'));
     }
 
 }

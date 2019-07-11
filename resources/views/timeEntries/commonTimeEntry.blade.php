@@ -18,6 +18,7 @@
             <table class="table table-striped table-bordered">
                 <thead>
                     <tr>
+                        <th scope="col">#</th>
                         <th scope="col">@lang('form.project')</th>
                         <th scope="col">@lang('form.requirement')</th>
                         <th scope="col">@lang('form.description')</th>
@@ -28,15 +29,15 @@
                 <tbody>
                     @forelse ($timeEntries as $key => $timeEntry)
                     <tr>
-                        <th scope="row">{{ $key++ }}</th>
+                        <td>{{ $timeEntries->perPage() * ($timeEntries->currentPage()-1) + $loop->iteration }}</td>
                         <td>{{ $timeEntry->requirement->project->name }}</td>
                         <td>{{ $timeEntry->requirement->name }}</td>
                         <td>{{ $timeEntry->description }}</td>
-                        <td>{{ $timeEntry->time }}</td>
+                        <td>{{ number_format($timeEntry->time, 2, '.', '') }}</td>
                         <td>
                             <a href="{{ route('timeEntries.edit', ['timeEntry' => $timeEntry->id]) }}"
                                 role="button"
-                                class="btn btn-default">
+                                class="btn btn-primary btn-sm">
                                     <i class="fa fa-pencil"></i>
                             </a>
                         </td>
@@ -51,5 +52,6 @@
                 </tbody>
             </table>
         </div>
+        {{ $timeEntries->links() }}
     </div>
 </div>

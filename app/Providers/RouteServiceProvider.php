@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Models\Project;
 use App\Models\Requirement;
 use App\Models\TimeEntry;
+use App\Models\Todo;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Route;
 
@@ -67,12 +68,27 @@ class RouteServiceProvider extends ServiceProvider
                 return $timeEntry;
             }
 
-            // change to timeEntries.index
+            return abort(
+                redirect()->route('timeEntries.index')
+                    ->with('alert', [
+                        'class' => 'warning',
+                        'message' => __('form.requested_time_entry_not_found'),
+                    ])
+            );
+        });
+
+        Route::bind('todo', function ($value) {
+            $todo = Todo::find($value);
+
+            if ($todo && auth()->user()->is($todo->user)) {
+                return $todo;
+            }
+
             return abort(
                 redirect()->route('projects.index')
                     ->with('alert', [
                         'class' => 'warning',
-                        'message' => __('form.requested_time_entry_not_found'),
+                        'message' => __('form.requested_todo_not_found'),
                     ])
             );
         });

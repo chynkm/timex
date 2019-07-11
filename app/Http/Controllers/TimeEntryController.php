@@ -21,6 +21,12 @@ class TimeEntryController extends Controller
     {
         $this->timeEntryRepo
             ->save(null, $request);
+
+        return redirect()->route('timeEntries.index')
+            ->with('alert', [
+                'class' => 'success',
+                'message' => __('form.time_entry_saved_successfully'),
+            ]);
     }
 
     public function create()
@@ -40,14 +46,12 @@ class TimeEntryController extends Controller
 
     public function edit(TimeEntry $timeEntry)
     {
-        $timeEntries = [];
         $projects = $this->projectRepo
             ->all()
             ->pluck('name', 'id');
 
         return view('timeEntries.createEdit', compact(
             'projects',
-            'timeEntries',
             'timeEntry'
         ));
     }
@@ -56,6 +60,12 @@ class TimeEntryController extends Controller
     {
         $this->timeEntryRepo
             ->save($timeEntry, $request);
+
+        return redirect()->route('timeEntries.index')
+            ->with('alert', [
+                'class' => 'success',
+                'message' => __('form.time_entry_saved_successfully'),
+            ]);
     }
 
     public function index()

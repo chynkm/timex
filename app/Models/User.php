@@ -51,4 +51,9 @@ class User extends Authenticatable
     {
         return $this->hasMany('App\Models\TimeEntry');
     }
+
+    public function todos()
+    {
+        return $this->hasMany('App\Models\Todo');
+    }
 }
