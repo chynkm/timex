@@ -23,10 +23,12 @@ class TimeEntryRepository
                 -1,
                 PREG_SPLIT_NO_EMPTY|PREG_SPLIT_DELIM_CAPTURE);
 
-            for ($i = 0; $i <= (count($description) - 2); $i += 2) {
-                $time = round($this->getTimeInDecimals($description[$i], $description[$i+2]), 2);
-                $descriptions[] = $description[$i].' - '.$description[$i+2].' '.trim($description[$i+1]).' ('.number_format($time, 2, '.', '').')';
-                $totalTime += $time;
+            if (is_numeric($description[count($description) - 1])) {
+                for ($i = 0; $i <= (count($description) - 2); $i += 2) {
+                    $time = round($this->getTimeInDecimals($description[$i], $description[$i+2]), 2);
+                    $descriptions[] = $description[$i].' - '.$description[$i+2].' '.trim($description[$i+1]).' ('.number_format($time, 2, '.', '').')';
+                    $totalTime += $time;
+                }
             }
 
             if (empty($descriptions)) {

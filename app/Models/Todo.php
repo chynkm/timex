@@ -8,6 +8,8 @@ class Todo extends Model
 {
     protected $guarded = [];
 
+    protected $touches = ['requirement', 'project'];
+
     public function requirement()
     {
         return $this->belongsTo('App\Models\Requirement');
@@ -16,5 +18,10 @@ class Todo extends Model
     public function user()
     {
         return $this->belongsTo('App\Models\User');
+    }
+
+    public function project()
+    {
+        return $this->requirement->project();
     }
 }

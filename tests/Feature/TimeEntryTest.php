@@ -364,5 +364,27 @@ class TimeEntryTest extends TestCase
             ->assertSee($project->name)
             ->assertSee($requirement->name)
             ->assertSee('Timeless time entry');
+
+        $this->post(route('timeEntries.store'), [
+            'project_id' => $project->id,
+            'requirement_id' => $requirement->id,
+            'description' => '1233 - 1239 Timeless time entry',
+        ]);
+
+        $this->get(route('timeEntries.create'))
+            ->assertSee($project->name)
+            ->assertSee($requirement->name)
+            ->assertSee('1233 - 1239 Timeless time entry');
+
+        $this->post(route('timeEntries.store'), [
+            'project_id' => $project->id,
+            'requirement_id' => $requirement->id,
+            'description' => '1400 1419 Timeless time entry',
+        ]);
+
+        $this->get(route('timeEntries.create'))
+            ->assertSee($project->name)
+            ->assertSee($requirement->name)
+            ->assertSee('1400 1419 Timeless time entry');
     }
 }

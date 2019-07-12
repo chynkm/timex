@@ -39,7 +39,7 @@ Route::middleware('auth')->group(function () {
     Route::get('time-entries/{timeEntry}/edit', ['as' => 'timeEntries.edit', 'uses' => 'TimeEntryController@edit']);
     Route::patch('time-entries/{timeEntry}/update', ['as' => 'timeEntries.update', 'uses' => 'TimeEntryController@update']);
 
-    Route::get('todos/{requirement}', ['as' => 'todos.index', 'uses' => 'TodoController@index']);
+    Route::get('todos/{requirement?}', ['as' => 'todos.index', 'uses' => 'TodoController@index']);
     Route::post('requirements/{requirement}/todo', ['as' => 'todos.store', 'uses' => 'TodoController@store']);
     Route::patch('todos/{todo}/update', ['as' => 'todos.update', 'uses' => 'TodoController@update']);
 });

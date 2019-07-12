@@ -18,6 +18,7 @@
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/style.css') }}" rel="stylesheet">
 </head>
 <body>
     <div id="app">
@@ -39,6 +40,9 @@
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('timeEntries.index') }}">@lang('form.time_entries')</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('todos.index') }}">@lang('form.todo')</a>
                         </li>
                         @endauth
                     </ul>

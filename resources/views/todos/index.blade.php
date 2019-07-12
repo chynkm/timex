@@ -10,23 +10,11 @@
                 </div>
 
                 <div class="card-body">
-                    {{ Form::open(['route' => ['todos.store', $requirement->id]]) }}
-                    @include('todos.todo', compact('todo'))
-                    </form>
-
-                    @foreach ($todos as $todo)
-                        {{ Form::open(['route' => ['todos.update', $todo->id], 'method' => 'patch']) }}
-                        <div class="form-check mt-2">
-                            {{ Form::checkbox('completed', null, $todo->completed, [
-                                'class' => 'form-check-input',
-                                'id' => 'todo_check_'.$todo->id,
-                                'onchange' => 'this.form.submit()']) }}
-                            <label class="form-check-label" for="todo_check_{{ $todo->id }}">
-                            {{ $todo->task }}&nbsp;{{ $todo->completed ? '('.$todo->completed.')': null }}
-                            </label>
-                        </div>
-                        </form>
-                    @endforeach
+                    @include('todos.commonTodo', [
+                        'requirement' => $requirement,
+                        'todos' => $todos,
+                        'todo' => $todo,
+                    ])
                     {{ $todos->links() }}
                 </div>
             </div>

@@ -4,20 +4,27 @@ namespace App\Http\Controllers;
 
 use App\Models\Requirement;
 use App\Models\Todo;
+use App\Repositories\ProjectRepository;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class TodoController extends Controller
 {
+    protected $projectRepo;
+
+    public function __construct(ProjectRepository $projectRepo)
+    {
+        $this->projectRepo = $projectRepo;
+    }
+
     public function store(Requirement $requirement, Request $request)
     {
         $request->validate(['task' => 'required|min:3|max:1000']);
 
         $requirement->addTodo($request);
 
-        return redirect()->route('todos.index', ['requirement' => $requirement->id])
-            ->with('alert', [
+        return back()->with('alert', [
                 'class' => 'success',
                 'message' => __('form.todo_saved_successfully'),
             ]);
@@ -26,8 +33,14 @@ class TodoController extends Controller
     public function index(Requirement $requirement)
     {
         $todo = new Todo;
-        $todos = Auth::user()
-            ->todos()
+
+        if (! isset($requirement->id)) {
+            $projects = $this->projectRepo->todos();
+            return view('todos.projectTodos', compact('projects', 'todo'));
+        }
+
+        $todos = $requirement->todos()
+            ->oldest('completed')
             ->latest()
             ->paginate(config('env.page_limit'));
 
@@ -40,12 +53,10 @@ class TodoController extends Controller
     public function update(Todo $todo, Request $request)
     {
         $todo->update([
-            'task' => $request->task,
             'completed' => $request->completed ? Carbon::now() : null,
         ]);
 
-        return redirect()->route('todos.index', ['requirement' => $todo->requirement_id])
-            ->with('alert', [
+        return back()->with('alert', [
                 'class' => 'success',
                 'message' => __('form.todo_saved_successfully'),
             ]);

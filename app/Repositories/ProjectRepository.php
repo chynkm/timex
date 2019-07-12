@@ -24,4 +24,21 @@ class ProjectRepository
             ->projects
             ->sortBy('name');
     }
+
+    public function todos()
+    {
+        return Auth::user()
+            ->projects()
+            ->with([
+                'requirements' => function($query) {
+                    $query->latest('updated_at');
+                },
+                'requirements.todos' => function($query) {
+                    $query->oldest('completed')
+                        ->latest();
+                }
+            ])
+            ->latest('updated_at')
+            ->get();
+    }
 }
