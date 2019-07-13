@@ -21,6 +21,13 @@ class ProjectRepository
     public function all()
     {
         return Auth::user()
+            ->projects
+            ->sortBy('name');
+    }
+
+    public function paginated()
+    {
+        return Auth::user()
             ->projects()
             ->orderBy('name')
             ->paginate(config('env.page_limit'));
