@@ -7,6 +7,11 @@
             <div class="card">
                 <div class="card-header">
                     @lang('form.todo') ({{ $requirement->project->name.' - '.$requirement->name }})
+                    <a href="{{ route('projects.show', ['project' => $requirement->project_id]) }}"
+                        role="button"
+                        class="btn btn-primary btn-sm pull-right">
+                            <i class="fa fa-pencil"></i>
+                    </a>
                 </div>
 
                 <div class="card-body">

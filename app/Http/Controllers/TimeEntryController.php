@@ -22,7 +22,7 @@ class TimeEntryController extends Controller
         $this->timeEntryRepo
             ->save(null, $request);
 
-        return redirect()->route('timeEntries.index')
+        return redirect()->route('timeEntries.create')
             ->with('alert', [
                 'class' => 'success',
                 'message' => __('form.time_entry_saved_successfully'),
