@@ -130,22 +130,37 @@ class TimeEntryController
 
     public function graph($request, $response, $args)
     {
-        $sql = "SELECT sum(time) total_time, DATE_FORMAT(te.created_at, '%d-%m') date from time_entries te
+        $sql = "SELECT SUM(IF(p.category <> 'health', time, 0)) work_time,
+            SUM(IF(p.category = 'health', time, 0)) health_time,
+            DATE_FORMAT(te.created_at, '%d-%m') date FROM time_entries te
             JOIN requirements r ON r.id = te.requirement_id
             JOIN projects p on p.id = r.project_id
             WHERE te.created_at >= DATE_SUB(NOW(), INTERVAL 1 MONTH)
-            AND p.category <> 'health'
             GROUP BY YEAR(te.created_at), MONTH(te.created_at), DAY(te.created_at)";
+
+        $lastMonth = new \DatePeriod(
+             (new \DateTime())->modify('-1 month'),
+             new \DateInterval('P1D'),
+             new \DateTime()
+        );
+
+        $workTime = $healthTime = [];
+        foreach ($lastMonth as $key => $date) {
+            // $series[$date->format('d-m')] = 0;
+            $workTime[$date->format('d-m')] = 0;
+            $healthTime[$date->format('d-m')] = 0;
+        }
 
         $stmt = $this->container->db->prepare($sql);
         $stmt->execute();
 
-        $dates = $series = [];
         while ($row = $stmt->fetchObject()) {
-            $dates[] = $row->date;
-            $series[] = $row->total_time;
+            $workTime[$row->date] = $row->work_time;
+            $healthTime[$row->date] = $row->health_time;
         }
 
-        return $response->withJson(['status' => 'true', 'dates' => $dates, 'series' => [$series]]);
+        $series = [array_values($workTime), array_values($healthTime)];
+
+        return $response->withJson(['status' => 'true', 'dates' => array_keys($workTime), 'series' => $series]);
     }
 }
