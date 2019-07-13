@@ -72,7 +72,9 @@
             </div>
 
             @unless (isset($timeEntry->id))
+            <div class="mb-4">
             @include('timeEntries.commonTimeEntry', ['timeEntries' => $timeEntries])
+            </div>
             @endunless
         </div>
     </div>

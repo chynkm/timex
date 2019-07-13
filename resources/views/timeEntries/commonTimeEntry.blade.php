@@ -1,4 +1,4 @@
-<div class="card mt-4">
+<div class="card">
     <div class="card-header">
         @if (request()->route()->getName() == 'timeEntries.index')
             @lang('form.time_entries')
@@ -27,7 +27,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @forelse ($timeEntries as $key => $timeEntry)
+                    @forelse ($timeEntries as $timeEntry)
                     <tr>
                         <td>{{ $timeEntries->perPage() * ($timeEntries->currentPage()-1) + $loop->iteration }}</td>
                         <td>{{ $timeEntry->requirement->project->name }}</td>

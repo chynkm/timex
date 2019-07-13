@@ -1,4 +1,3 @@
-<div class="card-body">
 {{ Form::open(['route' => ['todos.store', $requirement->id]]) }}
 @include('todos.todo', compact('todo'))
 </form>
@@ -18,4 +17,3 @@
     </div>
     </form>
 @endforeach
-</div>

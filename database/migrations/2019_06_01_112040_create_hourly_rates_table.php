@@ -19,6 +19,10 @@ class CreateHourlyRatesTable extends Migration
             $table->decimal('rate', 20, 2);
             $table->timestamp('created_at')
                 ->default(DB::raw('CURRENT_TIMESTAMP'));
+
+            $table->foreign('user_id')
+                ->references('id')
+                ->on('users');
         });
     }
 

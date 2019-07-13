@@ -27,9 +27,9 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @forelse ($projects as $key => $project)
+                                @forelse ($projects as $project)
                                 <tr>
-                                    <th scope="row">{{ ++$key }}</th>
+                                    <td>{{ $projects->perPage() * ($projects->currentPage()-1) + $loop->iteration }}</td>
                                     <td>{{ $project->name }}</td>
                                     <td>{{ $project->created_at }}</td>
                                     <td>
@@ -55,6 +55,7 @@
                             </tbody>
                         </table>
                     </div>
+                    {{ $projects->links() }}
                 </div>
             </div>
         </div>

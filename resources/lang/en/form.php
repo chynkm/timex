@@ -25,6 +25,7 @@ return [
     'action' => 'Action',
     'created_at' => 'Created at',
     'no_time_entries' => 'No time entries yet',
+    'no_todos_yet' => 'No todos yet',
     'no_todos' => 'No todo yet',
     'todays_time_entries' => 'Today\'s time entries',
     'view_project' => 'View project',

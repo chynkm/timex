@@ -21,8 +21,9 @@ class ProjectRepository
     public function all()
     {
         return Auth::user()
-            ->projects
-            ->sortBy('name');
+            ->projects()
+            ->orderBy('name')
+            ->paginate(config('env.page_limit'));
     }
 
     public function todos()
