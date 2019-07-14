@@ -46,7 +46,7 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="6">
+                        <td colspan="7">
                             {{ request()->route()->getName() == 'timeEntries.index' ? __('form.no_time_entries') : __('form.no_entries_for_today') }}
                         </td>
                     </tr>
