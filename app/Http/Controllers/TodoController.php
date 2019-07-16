@@ -52,8 +52,17 @@ class TodoController extends Controller
      */
     public function update(Todo $todo, Request $request)
     {
+        $request->validate(['task' => 'required|min:3|max:1000']);
+
+        /*$updateArray = ['completed' => $request->completed ? Carbon::now() : null];
+        if ($request->task) {
+            $updateArray['task'] = $request->task;
+        }
+
+        $todo->update($updateArray);*/
         $todo->update([
             'completed' => $request->completed ? Carbon::now() : null,
+            'task' => $request->task,
         ]);
 
         return back()->with('alert', [
