@@ -30,7 +30,7 @@ class RequirementController extends Controller
 
     public function edit(Requirement $requirement)
     {
-        return view('requirements.createEdit', compact('project', 'requirement'));
+        return view('requirements.createEdit', compact('requirement'));
     }
 
     public function projectRequirement(Project $project)

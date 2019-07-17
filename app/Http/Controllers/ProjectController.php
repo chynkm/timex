@@ -22,7 +22,7 @@ class ProjectController extends Controller
 
     public function index()
     {
-        $projects = $this->projectRepo->all();
+        $projects = $this->projectRepo->paginated();
 
         return view('projects.index', compact('projects'));
     }
