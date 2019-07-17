@@ -10,7 +10,7 @@
                     <a href="{{ route('projects.show', ['project' => $requirement->project_id]) }}"
                         role="button"
                         class="btn btn-primary btn-sm pull-right">
-                            <i class="fa fa-pencil"></i>
+                            <i class="fa fa-eye"></i>
                     </a>
                 </div>
 

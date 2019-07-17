@@ -23,6 +23,7 @@ return [
     'submit' => 'Submit',
     'time_entries' => 'Time Entries',
     'action' => 'Action',
+    'add_a_task' => 'Add a task',
     'created_at' => 'Created at',
     'no_time_entries' => 'No time entries yet',
     'no_todos_yet' => 'No todos yet',
