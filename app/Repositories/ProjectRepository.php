@@ -43,7 +43,7 @@ class ProjectRepository
                 },
                 'requirements.todos' => function($query) {
                     $query->orderByRaw('completed is NOT NULL, completed DESC')
-                        ->latest();
+                        ->latest('updated_at');
                 }
             ])
             ->latest('updated_at')
