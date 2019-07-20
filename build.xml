@@ -36,6 +36,10 @@
         <delete dir="${basedir}/build/phpdox" />
         <property name="clean.done" value="true" />
     </target>
+    <target name="clean-composer" description="Cleanup composer artifacts">
+        <delete dir="${basedir}/vendor" />
+        <delete file="${basedir}/composer.lock" />
+    </target>
     <target name="prepare" unless="prepare.done" depends="clean" description="Prepare for build">
         <mkdir dir="${basedir}/build/api" />
         <mkdir dir="${basedir}/build/coverage" />
