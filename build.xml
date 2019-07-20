@@ -111,7 +111,7 @@
     </target>
     <target name="phpcs" unless="phpcs.done" description="Find coding standard violations using PHP_CodeSniffer and print human readable output. Intended for usage on the command line before committing.">
         <exec executable="${phpcs}" taskname="phpcs">
-            <arg value="--standard=${build-dir}/build/phpcs.xml" />
+            <arg value="--standard=${build-dir}/phpcs.xml" />
             <arg path="${src-dir}" />
         </exec>
         <property name="phpcs.done" value="true" />
@@ -120,7 +120,7 @@
         <exec executable="${phpcs}" output="/dev/null" taskname="phpcs">
             <arg value="--report=checkstyle" />
             <arg value="--report-file=${build-dir}/logs/checkstyle.xml" />
-            <arg value="--standard=${build-dir}/build/phpcs.xml" />
+            <arg value="--standard=${build-dir}/phpcs.xml" />
             <arg path="${src-dir}" />
         </exec>
         <property name="phpcs.done" value="true" />
@@ -157,7 +157,7 @@
     <target name="phpdox" unless="phpdox.done" depends="phploc-ci,phpcs-ci,phpmd-ci" description="Generate project documentation using phpDox">
         <exec executable="${phpdox}" dir="${basedir}/build" taskname="phpdox">
             <arg value="-f" />
-            <arg value="${build-dir}/build/phpdox.xml" />
+            <arg value="${build-dir}/phpdox.xml" />
         </exec>
         <property name="phpdox.done" value="true" />
     </target>
