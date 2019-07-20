@@ -10,22 +10,22 @@
          stopOnFailure="false">
     <testsuites>
         <testsuite name="Unit">
-            <directory suffix="Test.php">./tests/Unit</directory>
+            <directory suffix="Test.php">../tests/Unit</directory>
         </testsuite>
 
         <testsuite name="Feature">
-            <directory suffix="Test.php">./tests/Feature</directory>
+            <directory suffix="Test.php">../tests/Feature</directory>
         </testsuite>
 
         <testsuite name="Repository">
-            <directory suffix="Test.php">./tests/Repository</directory>
+            <directory suffix="Test.php">../tests/Repository</directory>
         </testsuite>
     </testsuites>
     <logging>
-        <log type="coverage-html" target="build/coverage"/>
-        <log type="coverage-clover" target="build/logs/clover.xml"/>
-        <log type="coverage-crap4j" target="build/logs/crap4j.xml"/>
-        <log type="junit" target="build/logs/junit.xml"/>
+        <log type="coverage-html" target="{basedir}/build/coverage"/>
+        <log type="coverage-clover" target="{basedir}/build/logs/clover.xml"/>
+        <log type="coverage-crap4j" target="{basedir}/build/logs/crap4j.xml"/>
+        <log type="junit" target="{basedir}/build/logs/junit.xml"/>
     </logging>
     <filter>
         <whitelist processUncoveredFilesFromWhitelist="true">
@@ -40,6 +40,6 @@
         <server name="QUEUE_CONNECTION" value="sync"/>
         <server name="SESSION_DRIVER" value="array"/>
         <server name="DB_CONNECTION" value="sqlite"/>
-        <server name="DB_DATABASE" value="/tmp/testing.sqlite"/>
+        <server name="DB_DATABASE" value=":memory:"/>
     </php>
 </phpunit>
