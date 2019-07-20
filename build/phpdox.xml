@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<phpdox xmlns="http://phpdox.de/config" silent="false">
+<phpdox xmlns="http://xml.phpdox.net/config" silent="false">
     <project name="tdd-timex" source="app" workdir="${basedir}/build/api/xml">
         <collector publiconly="false" backend="parser">
             <include mask="*.php" />
