@@ -25,7 +25,7 @@
         <log type="coverage-html" target="{basedir}/build/coverage"/>
         <log type="coverage-clover" target="{basedir}/build/logs/clover.xml"/>
         <log type="coverage-crap4j" target="{basedir}/build/logs/crap4j.xml"/>
-        <log type="junit" target="{basedir}/build/logs/junit.xml"/>
+        <!-- <log type="junit" target="{basedir}/build/logs/junit.xml"/> -->
     </logging>
     <filter>
         <whitelist processUncoveredFilesFromWhitelist="true">
