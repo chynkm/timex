@@ -4,7 +4,7 @@
         <collector publiconly="false">
             <include mask="*.php" />
         </collector>
-        <generator output="${basedir}/build/api">
+        <generator output="api">
             <build engine="html" output="html" />
         </generator>
     </project>
