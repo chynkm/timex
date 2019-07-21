@@ -148,7 +148,7 @@
         <exec executable="${phpunit}" failonerror="true" taskname="phpunit">
             <arg value="--configuration" />
             <arg path="${basedir}/build/phpunit.xml" />
-            <arg value="--no-coverage" />
+            <!-- <arg value="--no-coverage" /> -->
         </exec>
         <property name="phpunit.done" value="true" />
     </target>
