@@ -100,7 +100,7 @@
             <arg path="${basedir}/app" />
         </exec>
     </target>
-
+<!--
     <target name="phpcb" description="Aggregate tool output with PHP_CodeBrowser">
         <exec executable="phpcb">
             <arg value="--log" />
@@ -189,34 +189,34 @@
     <target name="storage-permissions.windows" depends="storage.windows.check" if="storage.windows.exist" description="Setting storage permissions on windows">
         <echo>Setting app/storage to writable</echo>
         <attrib file="${basedir}/app/storage/**" perm="+R" failonerror="false" />
-    </target>
+    </target>-->
 
     <!--// Check to see it the app/storage folder exist, if so, then can change permissions //-->
-    <target name="storage.unix.check" description="Check for app/storage on unix">
+    <!-- <target name="storage.unix.check" description="Check for app/storage on unix">
         <condition property="storage.unix.exist">
             <and>
                 <available file="${basedir}/app/storage" type="dir" />
                 <os family="unix" />
             </and>
         </condition>
-    </target>
+    </target> -->
 
     <!--// Check to see it the app/storage folder exist, if so, then can change permissions //-->
-    <target name="storage.windows.check" description="Check for app/storage on windows">
+    <!-- <target name="storage.windows.check" description="Check for app/storage on windows">
         <condition property="storage.windows.exist">
             <and>
                 <available file="${basedir}/app/storage" type="dir" />
                 <os family="windows" />
             </and>
         </condition>
-    </target>
+    </target> -->
 
      <target name="prepare" depends="clean-build" description="Prepare for build">
         <echo>Making the build artifact folders</echo>
-        <mkdir dir="${basedir}/build/api" />
+        <!-- <mkdir dir="${basedir}/build/api" />
         <mkdir dir="${basedir}/build/code-browser" />
         <mkdir dir="${basedir}/build/coverage" />
-        <mkdir dir="${basedir}/build/logs" />
+        <mkdir dir="${basedir}/build/logs" /> -->
         <mkdir dir="${basedir}/build/pdepend" />
     </target>
 
