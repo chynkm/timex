@@ -6,4 +6,4 @@ php artisan route:cache
 php artisan config:cache
 php artisan view:clear
 php artisan queue:restart
-php artisan migrate
+yes | php artisan migrate
