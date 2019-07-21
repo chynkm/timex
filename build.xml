@@ -138,18 +138,17 @@
         <property name="phpcpd.done" value="true" />
     </target>
     <target name="phpunit" unless="phpunit.done" depends="prepare" description="Run unit tests with PHPUnit">
-        <exec executable="${phpunit}" resultproperty="result.phpunit" taskname="phpunit">
-            <arg value="--configuration" />
-            <arg path="${basedir}/build/phpunit.xml" />
-        </exec>
-        <property name="phpunit.done" value="true" />
-    </target>
-    <target name="phpunit-no-coverage" unless="phpunit.done" depends="prepare" description="Run unit tests with PHPUnit (without generating code coverage reports)">
         <exec executable="${phpunit}" failonerror="true" taskname="phpunit">
-            <arg value="--configuration" />
-            <arg path="${basedir}/build/phpunit.xml" />
+            <arg value="--configuration"/>
+            <arg path="${basedir}/build/phpunit.xml"/>
+            <arg value="--coverage-clover"/>
+            <arg path="${basedir}/build/logs/clover.xml"/>
+            <arg value="--coverage-crap4j"/>
+            <arg path="${basedir}/build/logs/crap4j.xml"/>
+            <arg value="--log-junit"/>
+            <arg path="${basedir}/build/logs/junit.xml"/>
         </exec>
-        <property name="phpunit.done" value="true" />
+        <property name="phpunit.done" value="true"/>
     </target>
     <target name="phpdox" unless="phpdox.done" depends="phploc-ci,phpcs-ci,phpmd-ci" description="Generate project documentation using phpDox">
         <exec executable="${phpdox}" dir="${basedir}/build" taskname="phpdox" />
