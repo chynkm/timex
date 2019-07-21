@@ -40,20 +40,20 @@ class TodoController extends Controller
         }
 
         $todos = $requirement->todos()
-            ->oldest('completed')
-            ->latest()
+            ->orderByRaw('completed is NOT NULL, completed DESC')
+            ->latest('updated_at')
             ->paginate(config('env.page_limit'));
 
         return view('todos.index', compact('todos', 'todo', 'requirement'));
     }
 
-    /**
-     * @todo add validation $request->validate(['task' => 'required|min:3|max:1000']);
-     */
     public function update(Todo $todo, Request $request)
     {
+        $request->validate(['task' => 'required|min:3|max:1000']);
+
         $todo->update([
             'completed' => $request->completed ? Carbon::now() : null,
+            'task' => $request->task,
         ]);
 
         return back()->with('alert', [

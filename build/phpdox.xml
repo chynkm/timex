@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpdox xmlns="http://xml.phpdox.net/config">
+    <project name="tdd-timex" source="${basedir}/../app" workdir="build/phpdox">
+        <collector publiconly="false">
+            <include mask="*.php" />
+        </collector>
+        <generator output="api">
+            <build engine="html" output="html" />
+        </generator>
+    </project>
+</phpdox>

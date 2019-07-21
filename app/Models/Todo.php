@@ -24,4 +24,9 @@ class Todo extends Model
     {
         return $this->requirement->project();
     }
+
+    public function todoHistories()
+    {
+        return $this->hasMany('App\Models\TodoHistory');
+    }
 }

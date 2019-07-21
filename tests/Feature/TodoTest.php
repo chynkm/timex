@@ -78,10 +78,35 @@ class TodoTest extends TestCase
             'task' => 'my first todo',
         ]);
 
-        $attributes = ['completed' => 1];
+        $attributes = ['completed' => 1, 'task' => 'my second todo'];
 
         $this->patch(route('todos.update', ['todo' => $todo->id]), $attributes)
             ->assertRedirect(route('todos.index', ['requirement' => $requirement->id]));
+
+        $this->get(route('todos.index'))
+            ->assertSee($attributes['task']);
+
+        $this->get(route('todos.index', ['requirement' => $requirement->id]))
+            ->assertSee($attributes['task']);
+
+        $attributes = ['completed' => 0, 'task' => 'my third todo'];
+
+        $this->patch(route('todos.update', ['todo' => $todo->id]), $attributes)
+            ->assertRedirect(route('todos.index', ['requirement' => $requirement->id]));
+
+        $this->assertDatabaseHas('todo_histories', [
+                'todo_id' => $todo->id,
+                'user_id' => $todo->user_id,
+                'requirement_id' => $todo->requirement_id,
+                'task' => 'my first todo',
+                'completed' => null,
+            ])
+            ->assertDatabaseHas('todo_histories', [
+                'todo_id' => $todo->id,
+                'user_id' => $todo->user_id,
+                'requirement_id' => $todo->requirement_id,
+                'task' => 'my second todo'
+            ]);
     }
 
     public function test_user_cannot_view_another_user_todo()

@@ -42,8 +42,8 @@ class ProjectRepository
                     $query->latest('updated_at');
                 },
                 'requirements.todos' => function($query) {
-                    $query->oldest('completed')
-                        ->latest();
+                    $query->orderByRaw('completed is NOT NULL, completed DESC')
+                        ->latest('updated_at');
                 }
             ])
             ->latest('updated_at')
