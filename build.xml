@@ -39,7 +39,7 @@
         <mkdir dir="${basedir}/build/logs" />
         <mkdir dir="${basedir}/build/pdepend" />
         <mkdir dir="${basedir}/build/phpdox" />
-        <touch dir="/tmp/testing.sqlite" />
+        <touch file="/tmp/testing.sqlite" />
         <property name="prepare.done" value="true" />
     </target>
     <target name="lint" unless="lint.done" description="Perform syntax check of sourcecode files">
