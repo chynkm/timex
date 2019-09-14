@@ -10,6 +10,7 @@ class TodoObserver
      * Handle the todo "updating" event.
      *
      * @param  \App\Todo  $todo
+     *
      * @return void
      */
     public function updating(Todo $todo)
@@ -21,6 +22,8 @@ class TodoObserver
             'task' => $todoOriginal['task'],
             'deadline' => $todoOriginal['deadline'],
             'completed' => $todoOriginal['completed'],
+            'impact' => $todoOriginal['impact'],
+            'complexity' => $todoOriginal['complexity'],
         ]);
     }
 }

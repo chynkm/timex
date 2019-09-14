@@ -51,19 +51,25 @@ class TodoTest extends TestCase
         $this->get(route('todos.index', ['requirement' => $requirement->id]))
             ->assertOk();
 
-        $attributes = ['task' => 'my first todo'];
+        $attributes = [
+            'task' => 'my first todo',
+            'impact' => 'high',
+            'complexity' => 'easy',
+        ];
 
         $this->post(route('todos.store', ['requirement' => $requirement->id]), $attributes)
             ->assertRedirect(route('todos.index', ['requirement' => $requirement->id]));
 
         $this->get(route('todos.index', ['requirement' => $requirement->id]))
-            ->assertSee($attributes['task']);
+            ->assertSee($attributes['task'])
+            ->assertSee('high');
 
         $this->assertDatabaseHas('todos', $attributes);
     }
 
     public function test_user_can_update_a_todo()
     {
+        $this->withoutExceptionHandling();
         $this->signIn();
 
         $project = factory(Project::class)->create(['user_id' => auth()->id()]);
@@ -76,9 +82,16 @@ class TodoTest extends TestCase
             'user_id' => auth()->id(),
             'requirement_id' => $requirement->id,
             'task' => 'my first todo',
+            'impact' => 'high',
+            'complexity' => 'hard',
         ]);
 
-        $attributes = ['completed' => 1, 'task' => 'my second todo'];
+        $attributes = [
+            'completed' => 1,
+            'task' => 'my second todo',
+            'impact' => 'high',
+            'complexity' => 'easy',
+        ];
 
         $this->patch(route('todos.update', ['todo' => $todo->id]), $attributes)
             ->assertRedirect(route('todos.index', ['requirement' => $requirement->id]));
@@ -89,7 +102,12 @@ class TodoTest extends TestCase
         $this->get(route('todos.index', ['requirement' => $requirement->id]))
             ->assertSee($attributes['task']);
 
-        $attributes = ['completed' => 0, 'task' => 'my third todo'];
+        $attributes = [
+            'completed' => 0,
+            'task' => 'my third todo',
+            'impact' => 'high',
+            'complexity' => 'medium',
+        ];
 
         $this->patch(route('todos.update', ['todo' => $todo->id]), $attributes)
             ->assertRedirect(route('todos.index', ['requirement' => $requirement->id]));
@@ -99,13 +117,17 @@ class TodoTest extends TestCase
                 'user_id' => $todo->user_id,
                 'requirement_id' => $todo->requirement_id,
                 'task' => 'my first todo',
+                'impact' => 'high',
+                'complexity' => 'hard',
                 'completed' => null,
             ])
             ->assertDatabaseHas('todo_histories', [
                 'todo_id' => $todo->id,
                 'user_id' => $todo->user_id,
                 'requirement_id' => $todo->requirement_id,
-                'task' => 'my second todo'
+                'task' => 'my second todo',
+                'impact' => 'high',
+                'complexity' => 'easy',
             ]);
     }
 
@@ -138,6 +160,8 @@ class TodoTest extends TestCase
             'user_id' => auth()->id(),
             'requirement_id' => $requirement->id,
             'task' => $input,
+            'impact' => 'high',
+            'complexity' => 'easy',
         ]);
 
         $this->post(route('todos.store', ['requirement' => $requirement->id]), $todo)
@@ -157,6 +181,44 @@ class TodoTest extends TestCase
         ];
     }
 
+    /**
+     * @dataProvider invalidImpactComplexityProvider
+     */
+    public function test_store_impact_complexity_invalidations($input, $output, $message)
+    {
+        $this->signIn();
+
+        $project = factory(Project::class)->create(['user_id' => auth()->id()]);
+        $requirement = factory(Requirement::class)->create(['project_id' => $project->id]);
+
+        $this->get(route('todos.index', ['requirement' => $requirement->id]))
+            ->assertOk();
+
+        $todo = factory('App\Models\Todo')->raw([
+            'user_id' => auth()->id(),
+            'requirement_id' => $requirement->id,
+            'task' => 'first todo',
+            'impact' => $input,
+            'complexity' => $input,
+        ]);
+
+        $this->post(route('todos.store', ['requirement' => $requirement->id]), $todo)
+            ->assertSessionHasErrors('impact')
+            ->assertSessionHasErrors('complexity');
+
+        $this->assertDatabaseMissing('todos', $todo);
+    }
+
+    public function invalidImpactComplexityProvider()
+    {
+        return [
+            ['', false, 'blank, validation = false'],
+            [null, false, 'null, validation = false'],
+            ['abc', false, 'some characters, validation = false'],
+            [1234, false, 'some number, validation = false'],
+        ];
+    }
+
     public function test_get_all_todos_of_a_user()
     {
         $this->signIn();
@@ -167,7 +229,11 @@ class TodoTest extends TestCase
         $this->get(route('todos.index'))
             ->assertOk();
 
-        $attributes1 = ['task' => 'my first todo'];
+        $attributes1 = [
+            'task' => 'my first todo',
+            'impact' => 'high',
+            'complexity' => 'easy',
+        ];
 
         $this->post(route('todos.store', ['requirement' => $requirement1->id]), $attributes1)
             ->assertRedirect(route('todos.index'));
@@ -175,7 +241,11 @@ class TodoTest extends TestCase
         $project2 = factory(Project::class)->create(['user_id' => auth()->id()]);
         $requirement2 = factory(Requirement::class)->create(['project_id' => $project2->id]);
 
-        $attributes2 = ['task' => 'my second todo'];
+        $attributes2 = [
+            'task' => 'my second todo',
+            'impact' => 'medium',
+            'complexity' => 'medium',
+        ];
 
         $this->post(route('todos.store', ['requirement' => $requirement2->id]), $attributes2)
             ->assertRedirect(route('todos.index'));
