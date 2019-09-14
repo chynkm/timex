@@ -387,4 +387,33 @@ class TimeEntryTest extends TestCase
             ->assertSee($requirement->name)
             ->assertSee('1400 1419 Timeless time entry');
     }
+
+    public function test_user_can_create_a_time_entry_with_breaks()
+    {
+        $this->signIn();
+
+        $project = factory(Project::class)->create(['user_id' => auth()->id()]);
+        $requirement = factory(Requirement::class)->create(['project_id' => $project->id]);
+        factory(HourlyRate::class)->create(['user_id' => auth()->id()]);
+
+        $this->post(route('timeEntries.store'), [
+            'project_id' => $project->id,
+            'requirement_id' => $requirement->id,
+            'description' => '1110 Worked on jenkins 1140 1200 time entry with break 1215',
+        ]);
+
+        $this->get(route('timeEntries.create'))
+            ->assertSee($project->name)
+            ->assertSee($requirement->name)
+            ->assertSee('1110 - 1140 Worked on jenkins (0.50)')
+            ->assertSee('1200 - 1215 time entry with break (0.25)')
+            ->assertDontSee('1140 - 1200  (0.33)')
+            ->assertSee('0.75')
+            ->assertDontSee('1.08');
+
+        $this->assertDatabaseHas('time_entries', [
+            'description' => "1110 - 1140 Worked on jenkins (0.50)\n1200 - 1215 time entry with break (0.25)",
+            'time' => 0.75,
+        ]);
+    }
 }

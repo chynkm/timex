@@ -72,7 +72,7 @@
             </div>
 
             @unless (isset($timeEntry->id))
-            <div class="mb-4">
+            <div class="mb-4 mt-2">
             @include('timeEntries.commonTimeEntry', ['timeEntries' => $timeEntries])
             </div>
             @endunless

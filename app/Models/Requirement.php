@@ -29,6 +29,8 @@ class Requirement extends Model
                 'user_id' => Auth::id(),
                 'task' => $todoData->task,
                 'completed' => $todoData->completed ? Carbon::now() : null,
+                'impact' => $todoData->impact,
+                'complexity' => $todoData->complexity,
             ]);
     }
 }

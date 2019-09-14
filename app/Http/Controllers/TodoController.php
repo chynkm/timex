@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\TodoSaveRequest;
 use App\Models\Requirement;
 use App\Models\Todo;
 use App\Repositories\ProjectRepository;
@@ -18,10 +19,8 @@ class TodoController extends Controller
         $this->projectRepo = $projectRepo;
     }
 
-    public function store(Requirement $requirement, Request $request)
+    public function store(Requirement $requirement, TodoSaveRequest $request)
     {
-        $request->validate(['task' => 'required|min:3|max:1000']);
-
         $requirement->addTodo($request);
 
         return back()->with('alert', [
@@ -41,19 +40,21 @@ class TodoController extends Controller
 
         $todos = $requirement->todos()
             ->orderByRaw('completed is NOT NULL, completed DESC')
+            ->orderByRaw('FIELD(impact, "high", "medium", "low")')
+            ->orderByRaw('FIELD(complexity, "easy", "medium", "hard")')
             ->latest('updated_at')
             ->paginate(config('env.page_limit'));
 
         return view('todos.index', compact('todos', 'todo', 'requirement'));
     }
 
-    public function update(Todo $todo, Request $request)
+    public function update(Todo $todo, TodoSaveRequest $request)
     {
-        $request->validate(['task' => 'required|min:3|max:1000']);
-
         $todo->update([
             'completed' => $request->completed ? Carbon::now() : null,
             'task' => $request->task,
+            'impact' => $request->impact,
+            'complexity' => $request->complexity,
         ]);
 
         return back()->with('alert', [
