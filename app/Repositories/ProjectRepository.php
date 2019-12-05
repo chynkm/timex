@@ -35,6 +35,8 @@ class ProjectRepository
 
     public function todos()
     {
+
+
         return Auth::user()
             ->projects()
             ->with([
@@ -42,10 +44,15 @@ class ProjectRepository
                     $query->latest('updated_at');
                 },
                 'requirements.todos' => function($query) {
-                    $query->orderByRaw('completed is NOT NULL, completed DESC')
-                        ->orderByRaw('FIELD(impact, "high", "medium", "low")')
-                        ->orderByRaw('FIELD(complexity, "easy", "medium", "hard")')
-                        ->latest('updated_at');
+                    if (config('app.env') == "testing") {
+                        $query->orderByRaw('completed is NOT NULL, completed DESC')
+                            ->latest('updated_at');
+                    } else {
+                        $query->orderByRaw('completed is NOT NULL, completed DESC')
+                            ->orderByRaw('FIELD(impact, "high", "medium", "low")')
+                            ->orderByRaw('FIELD(complexity, "easy", "medium", "hard")')
+                            ->latest('updated_at');
+                    }
                 }
             ])
             ->latest('updated_at')

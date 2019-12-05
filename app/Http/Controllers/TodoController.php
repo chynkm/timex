@@ -39,10 +39,14 @@ class TodoController extends Controller
         }
 
         $todos = $requirement->todos()
-            ->orderByRaw('completed is NOT NULL, completed DESC')
-            ->orderByRaw('FIELD(impact, "high", "medium", "low")')
-            ->orderByRaw('FIELD(complexity, "easy", "medium", "hard")')
-            ->latest('updated_at')
+            ->orderByRaw('completed is NOT NULL, completed DESC');
+
+        if (config('app.env') != "testing") {
+            $todos = $todos->orderByRaw('FIELD(impact, "high", "medium", "low")')
+                ->orderByRaw('FIELD(complexity, "easy", "medium", "hard")');
+        }
+
+        $todos = $todos->latest('updated_at')
             ->paginate(config('env.page_limit'));
 
         return view('todos.index', compact('todos', 'todo', 'requirement'));
