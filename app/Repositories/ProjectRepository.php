@@ -35,8 +35,6 @@ class ProjectRepository
 
     public function todos()
     {
-
-
         return Auth::user()
             ->projects()
             ->with([

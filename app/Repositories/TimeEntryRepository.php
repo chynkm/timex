@@ -18,7 +18,7 @@ class TimeEntryRepository
         if (is_null($timeEntry)) {
             $descriptions = [];
             $totalTime = 0;
-            $description = preg_split('/([0-9]{3,4})/',
+            $description = preg_split('/((?<![-#\d])\d{3,4})/',
                 $timeEntryData->description,
                 -1,
                 PREG_SPLIT_NO_EMPTY|PREG_SPLIT_DELIM_CAPTURE);

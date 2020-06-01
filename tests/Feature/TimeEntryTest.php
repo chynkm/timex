@@ -37,6 +37,27 @@ class TimeEntryTest extends TestCase
             ->assertSee('1110 - 1140 Worked on TDD for add time entry (0.50)');
     }
 
+    public function test_user_can_create_a_time_entry_with_hyphen_or_hash()
+    {
+        $this->withoutExceptionHandling();
+        $this->signIn();
+
+        $project = factory(Project::class)->create(['user_id' => auth()->id()]);
+        $requirement = factory(Requirement::class)->create(['project_id' => $project->id]);
+        factory(HourlyRate::class)->create(['user_id' => auth()->id()]);
+
+        $this->post(route('timeEntries.store'), [
+            'project_id' => $project->id,
+            'requirement_id' => $requirement->id,
+            'description' => '1110 cross-trainer-#200KCAL, treadmill-100KCAL 1140 another entry 1200',
+        ]);
+
+        $this->get(route('timeEntries.create'))
+            ->assertSee($project->name)
+            ->assertSee($requirement->name)
+            ->assertSee('1110 - 1140 cross-trainer-#200KCAL, treadmill-100KCAL (0.50)');
+    }
+
     public function test_other_user_cannot_see_my_time_entry()
     {
         $this->signIn();
