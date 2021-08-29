@@ -43,4 +43,6 @@ return [
     'please_select_a_project' => 'Please select a project',
     'time_entry_saved_successfully' => 'Time entry saved successfully',
     'todo_saved_successfully' => 'Todo saved successfully',
+    'search' => 'Search',
+    'reset' => 'Reset',
 ];
