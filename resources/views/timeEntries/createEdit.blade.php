@@ -19,7 +19,7 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="name">@lang('form.project')</label>
+                                <label for="project_id">@lang('form.project')</label>
                                 {{ Form::select('project_id',
                                     $projects,
                                     isset($timeEntry->id) ? $timeEntry->requirement->project_id : null,
@@ -36,7 +36,7 @@
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="name">@lang('form.requirement')</label>
+                                <label for="requirement_id">@lang('form.requirement')</label>
                                 {{ Form::select('requirement_id', [], null, ['class' => 'form-control', 'id' => 'requirement_id', 'placeholder' => __('form.please_select_a_project')]) }}
                                 @error('requirement_id')
                                 <div class="error invalid-feedback">{{ $message }}</div>
@@ -46,7 +46,7 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="name">@lang('form.description')</label>
+                        <label for="description">@lang('form.description')</label>
                         {{ Form::textarea('description', isset($timeEntry->id) ? $timeEntry->description : null, ['class' => 'form-control', 'id' => 'description', 'placeholder' => __('form.enter_time_entry'), 'rows' => 4]) }}
                         @error('description')
                         <div class="error invalid-feedback">{{ $message }}</div>
@@ -54,8 +54,8 @@
                     </div>
                     @if (isset($timeEntry->id))
                     <div class="form-group">
-                        <label for="name">@lang('form.time')</label>
-                        {{ Form::text('time', $timeEntry->time, ['class' => 'form-control', 'placeholder' => __('form.enter_time')]) }}
+                        <label for="time">@lang('form.time')</label>
+                        {{ Form::text('time', $timeEntry->time, ['class' => 'form-control', 'id' => 'time', 'placeholder' => __('form.enter_time')]) }}
                         @error('time')
                         <div class="error invalid-feedback">{{ $message }}</div>
                         @enderror
@@ -73,7 +73,14 @@
 
             @unless (isset($timeEntry->id))
             <div class="mb-4 mt-2">
-            @include('timeEntries.commonTimeEntry', ['timeEntries' => $timeEntries])
+                <div class="card">
+                    <div class="card-header">
+                        @lang('form.todays_time_entries')
+                    </div>
+                    <div class="card-body">
+                        @include('timeEntries.commonTimeEntry', ['timeEntries' => $timeEntries])
+                    </div>
+                </div>
             </div>
             @endunless
         </div>

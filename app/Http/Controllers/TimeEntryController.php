@@ -68,10 +68,13 @@ class TimeEntryController extends Controller
             ]);
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $timeEntries = $this->timeEntryRepo->all();
+        $timeEntries = $this->timeEntryRepo->all($request);
+        $projects = $this->projectRepo
+            ->all()
+            ->pluck('name', 'id');
 
-        return view('timeEntries.index', compact('timeEntries'));
+        return view('timeEntries.index', compact('projects', 'timeEntries'));
     }
 }

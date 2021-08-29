@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Models\Project;
 use App\Models\TimeEntry;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -63,12 +64,27 @@ class TimeEntryRepository
         return round(abs($end - $start) / (60*60), 2);
     }
 
-    public function all()
+    public function all($request)
     {
-        return Auth::user()
+        $timeEntries = Auth::user()
             ->timeEntries()
-            ->latest()
-            ->paginate(config('env.page_limit'));
+            ->latest();
+
+        if ($request->project_id) {
+            $requirements = Project::find($request->project_id)
+                ->requirements
+                ->modelkeys();
+            $timeEntries = $timeEntries
+                ->whereIn('requirement_id', $requirements);
+        }
+
+        if ($request->requirement_id) {
+            $timeEntries = $timeEntries
+                ->where('requirement_id', $request->requirement_id);
+        }
+
+        return $timeEntries->paginate(config('env.page_limit'))
+            ->appends($request->only('project_id', 'requirement_id'));
     }
 
     public function todaysEntries()
